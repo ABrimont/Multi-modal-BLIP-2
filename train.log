@@ -1,0 +1,429 @@
+nohup: ignoring input
+master_addr is only used for static rdzv_backend and when rdzv_endpoint is not specified.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 0, world 2): env://
+| distributed init (rank 1, world 2): env://
+NCCL version 2.14.3+cuda11.8
+2025-08-24 15:54:22,314 [INFO] 
+=====  Running Parameters    =====
+2025-08-24 15:54:22,314 [INFO] {
+    "accum_grad_iters": 8,
+    "amp": true,
+    "batch_size_eval": 16,
+    "batch_size_train": 1,
+    "device": "cuda",
+    "dist_backend": "nccl",
+    "dist_url": "env://",
+    "distributed": true,
+    "evaluate": false,
+    "gpu": 0,
+    "init_lr": 1e-06,
+    "iters_per_inner_epoch": 10000,
+    "lr_sched": "linear_warmup_cosine_lr",
+    "max_epoch": 10,
+    "max_iters": 100000,
+    "max_len": 32,
+    "min_len": 5,
+    "min_lr": 1e-07,
+    "num_beams": 5,
+    "num_workers": 1,
+    "output_dir": "output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_audio_scst",
+    "rank": 0,
+    "resume_ckpt_path": null,
+    "runner": "runner_iter",
+    "seed": 42,
+    "task": "captioning",
+    "test_splits": [
+        "test"
+    ],
+    "train_splits": [
+        "train"
+    ],
+    "valid_splits": [
+        "val"
+    ],
+    "warmup_lr": 1e-08,
+    "warmup_steps": 20000,
+    "weight_decay": 0.05,
+    "world_size": 2
+}
+2025-08-24 15:54:22,314 [INFO] 
+======  Dataset Attributes  ======
+2025-08-24 15:54:22,314 [INFO] 
+======== vatex_caption_audio =======
+2025-08-24 15:54:22,314 [INFO] {
+    "build_info": {
+        "annotations": {
+            "test": {
+                "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json",
+                "url": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json"
+            },
+            "train": {
+                "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json",
+                "url": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json"
+            },
+            "val": {
+                "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json",
+                "url": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json"
+            }
+        },
+        "videos": {
+            "storage": "/home/abrimont/partage/VALOR/datasets/vatex/raw_videos"
+        }
+    },
+    "data_dir": "$/home/abrimont/partage/mllm-video-captioner/lavis/datasets/",
+    "data_type": "videos",
+    "text_processor": {
+        "eval": {
+            "name": "blip_caption"
+        },
+        "train": {
+            "name": "blip_caption"
+        }
+    },
+    "vis_processor": {
+        "eval": {
+            "image_size": 224,
+            "n_frms": 8,
+            "name": "alpro_video_eval"
+        },
+        "train": {
+            "image_size": 224,
+            "n_frms": 8,
+            "name": "alpro_video_train"
+        }
+    }
+}
+2025-08-24 15:54:22,314 [INFO] 
+======  Model Attributes  ======
+2025-08-24 15:54:22,314 [INFO] {
+    "arch": "blip2_t5_multimodal",
+    "drop_path_rate": 0,
+    "finetuned": "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_audio/20250822202/checkpoint_best.pth",
+    "freeze_audio": true,
+    "freeze_vit": true,
+    "image_size": 224,
+    "load_finetuned": true,
+    "load_pretrained": false,
+    "lora": false,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "lora_r": 8,
+    "model_type": "pretrain_flant5xl",
+    "num_query_token": 32,
+    "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth",
+    "prompt": "a video of",
+    "scst": true,
+    "t5_model": "google/flan-t5-xl",
+    "use_grad_checkpoint": false,
+    "vit_precision": "fp16"
+}
+['/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json']
+Using downloaded and verified file: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json
+['/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json']
+Using downloaded and verified file: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json
+['/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json']
+Using downloaded and verified file: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json
+2025-08-24 15:54:22,315 [INFO] Building datasets...
+/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json
+/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json
+/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json
+2025-08-24 15:54:22,476 [INFO] BEATs Config: {'input_patch_size': 16, 'embed_dim': 512, 'conv_bias': False, 'encoder_layers': 12, 'encoder_embed_dim': 768, 'encoder_ffn_embed_dim': 3072, 'encoder_attention_heads': 12, 'activation_fn': 'gelu', 'layer_wise_gradient_decay_ratio': 1.0, 'layer_norm_first': False, 'deep_norm': True, 'dropout': 0.1, 'attention_dropout': 0.1, 'activation_dropout': 0.0, 'encoder_layerdrop': 0.05, 'dropout_input': 0.1, 'conv_pos': 128, 'conv_pos_groups': 16, 'relative_position_embedding': True, 'num_buckets': 320, 'max_distance': 800, 'gru_rel_pos': True, 'finetuned_model': False, 'predictor_dropout': 0.1, 'predictor_class': 527}
+2025-08-24 15:54:31,019 [INFO] freeze vision encoder
+2025-08-24 15:54:31,019 [INFO] freeze audio encoder
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertLMHeadModel: ['bert.embeddings.token_type_embeddings.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertLMHeadModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertLMHeadModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertLMHeadModel were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['bert.encoder.layer.0.output_query.dense.weight', 'bert.encoder.layer.4.crossattention_vis.self.key.bias', 'bert.encoder.layer.4.crossattention_aud.output.dense.weight', 'bert.encoder.layer.6.crossattention_vis.self.key.bias', 'bert.encoder.layer.2.crossattention_aud.output.dense.weight', 'bert.encoder.layer.10.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.8.output_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.self.query.bias', 'bert.encoder.layer.4.intermediate_query.dense.bias', 'bert.encoder.layer.4.crossattention_vis.self.key.weight', 'bert.encoder.layer.8.crossattention_vis.self.key.weight', 'bert.encoder.layer.3.output_query.dense.bias', 'bert.encoder.layer.10.crossattention_vis.self.key.bias', 'bert.encoder.layer.4.crossattention_vis.self.value.weight', 'bert.encoder.layer.2.output_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.output.dense.bias', 'bert.encoder.layer.8.crossattention_aud.output.dense.weight', 'bert.encoder.layer.10.crossattention_aud.self.value.bias', 'bert.encoder.layer.9.output_query.dense.bias', 'bert.encoder.layer.4.crossattention_aud.self.value.weight', 'bert.encoder.layer.0.crossattention_vis.self.query.weight', 'bert.encoder.layer.8.crossattention_vis.self.query.bias', 'bert.encoder.layer.5.output_query.LayerNorm.weight', 'bert.encoder.layer.11.output_query.dense.bias', 'bert.encoder.layer.4.intermediate_query.dense.weight', 'bert.encoder.layer.2.crossattention_vis.self.value.bias', 'bert.encoder.layer.10.crossattention_aud.self.query.bias', 'bert.encoder.layer.4.crossattention_aud.self.query.bias', 'bert.encoder.layer.10.crossattention_vis.output.dense.bias', 'bert.encoder.layer.10.output_query.LayerNorm.weight', 'bert.encoder.layer.0.intermediate_query.dense.bias', 'bert.encoder.layer.2.crossattention_aud.self.query.weight', 'bert.encoder.layer.2.crossattention_vis.self.key.weight', 'bert.encoder.layer.4.output_query.dense.weight', 'bert.encoder.layer.6.crossattention_aud.output.dense.bias', 'bert.encoder.layer.10.crossattention_vis.self.value.bias', 'bert.encoder.layer.8.output_query.LayerNorm.weight', 'bert.encoder.layer.0.output_query.dense.bias', 'bert.encoder.layer.3.output_query.LayerNorm.weight', 'bert.encoder.layer.10.crossattention_aud.self.key.weight', 'bert.encoder.layer.6.crossattention_aud.self.query.weight', 'bert.encoder.layer.6.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.10.crossattention_aud.self.query.weight', 'bert.encoder.layer.4.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.5.output_query.dense.bias', 'bert.encoder.layer.7.output_query.dense.bias', 'bert.encoder.layer.0.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_vis.self.value.bias', 'bert.encoder.layer.8.crossattention_vis.output.dense.bias', 'bert.encoder.layer.7.output_query.LayerNorm.weight', 'bert.encoder.layer.7.output_query.dense.weight', 'bert.encoder.layer.4.crossattention_aud.self.query.weight', 'bert.encoder.layer.0.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.9.intermediate_query.dense.bias', 'bert.encoder.layer.10.crossattention_aud.output.dense.bias', 'bert.encoder.layer.6.output_query.LayerNorm.weight', 'bert.encoder.layer.7.output_query.LayerNorm.bias', 'bert.encoder.layer.2.intermediate_query.dense.weight', 'bert.encoder.layer.9.intermediate_query.dense.weight', 'bert.encoder.layer.7.intermediate_query.dense.weight', 'bert.encoder.layer.9.output_query.LayerNorm.bias', 'bert.encoder.layer.2.crossattention_aud.self.key.weight', 'bert.encoder.layer.8.crossattention_aud.self.value.bias', 'bert.encoder.layer.4.crossattention_vis.self.query.bias', 'bert.encoder.layer.1.output_query.LayerNorm.weight', 'bert.encoder.layer.6.output_query.dense.bias', 'bert.encoder.layer.2.output_query.dense.bias', 'bert.encoder.layer.2.crossattention_vis.self.query.weight', 'bert.encoder.layer.0.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_aud.self.query.bias', 'bert.encoder.layer.10.crossattention_vis.self.key.weight', 'bert.encoder.layer.8.output_query.LayerNorm.bias', 'bert.encoder.layer.5.output_query.LayerNorm.bias', 'bert.encoder.layer.4.output_query.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_aud.self.query.weight', 'bert.encoder.layer.3.intermediate_query.dense.bias', 'bert.encoder.layer.10.crossattention_vis.self.value.weight', 'bert.encoder.layer.8.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.1.intermediate_query.dense.weight', 'bert.encoder.layer.4.crossattention_aud.self.key.bias', 'bert.encoder.layer.2.crossattention_vis.output.dense.bias', 'bert.encoder.layer.2.output_query.LayerNorm.bias', 'bert.encoder.layer.4.crossattention_vis.self.query.weight', 'bert.encoder.layer.2.crossattention_vis.output.dense.weight', 'bert.encoder.layer.9.output_query.dense.weight', 'bert.encoder.layer.2.intermediate_query.dense.bias', 'bert.encoder.layer.9.output_query.LayerNorm.weight', 'bert.encoder.layer.0.crossattention_vis.self.query.bias', 'bert.encoder.layer.8.crossattention_vis.output.dense.weight', 'bert.encoder.layer.4.crossattention_vis.output.dense.bias', 'bert.encoder.layer.2.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.10.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.2.output_query.LayerNorm.weight', 'bert.encoder.layer.3.intermediate_query.dense.weight', 'bert.encoder.layer.8.crossattention_aud.self.value.weight', 'bert.encoder.layer.2.crossattention_vis.self.value.weight', 'bert.encoder.layer.6.crossattention_aud.self.value.bias', 'bert.encoder.layer.0.crossattention_vis.self.value.weight', 'bert.encoder.layer.10.crossattention_aud.output.dense.weight', 'bert.encoder.layer.3.output_query.dense.weight', 'bert.encoder.layer.1.intermediate_query.dense.bias', 'bert.encoder.layer.6.output_query.dense.weight', 'bert.encoder.layer.10.crossattention_aud.self.key.bias', 'bert.encoder.layer.2.crossattention_vis.self.query.bias', 'bert.encoder.layer.6.intermediate_query.dense.bias', 'bert.encoder.layer.4.crossattention_vis.self.value.bias', 'bert.encoder.layer.8.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_vis.self.key.weight', 'bert.encoder.layer.2.crossattention_aud.self.value.bias', 'bert.encoder.layer.10.crossattention_vis.output.dense.weight', 'bert.encoder.layer.1.output_query.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.key.bias', 'bert.encoder.layer.0.output_query.LayerNorm.bias', 'bert.encoder.layer.10.output_query.dense.weight', 'bert.encoder.layer.4.output_query.LayerNorm.weight', 'bert.encoder.layer.10.intermediate_query.dense.bias', 'bert.encoder.layer.4.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.0.intermediate_query.dense.weight', 'bert.encoder.layer.7.intermediate_query.dense.bias', 'bert.encoder.layer.6.crossattention_vis.self.query.weight', 'bert.encoder.layer.11.output_query.dense.weight', 'bert.encoder.layer.5.output_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.self.value.weight', 'bert.encoder.layer.10.output_query.dense.bias', 'bert.encoder.layer.0.crossattention_aud.self.query.weight', 'bert.encoder.layer.6.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_vis.self.key.weight', 'bert.encoder.layer.4.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.11.output_query.LayerNorm.weight', 'cls.predictions.decoder.weight', 'bert.encoder.layer.0.crossattention_vis.output.dense.weight', 'bert.encoder.layer.2.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.8.output_query.dense.bias', 'bert.encoder.layer.0.crossattention_vis.self.value.bias', 'bert.encoder.layer.10.crossattention_vis.self.query.bias', 'bert.encoder.layer.4.output_query.dense.bias', 'bert.encoder.layer.5.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.output.dense.weight', 'bert.encoder.layer.2.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_aud.self.value.weight', 'bert.encoder.layer.8.crossattention_aud.self.key.weight', 'bert.encoder.layer.0.crossattention_vis.self.key.bias', 'bert.encoder.layer.6.crossattention_vis.self.value.weight', 'bert.encoder.layer.4.crossattention_aud.self.key.weight', 'bert.encoder.layer.1.output_query.dense.weight', 'bert.encoder.layer.8.crossattention_vis.self.key.bias', 'bert.encoder.layer.11.intermediate_query.dense.weight', 'bert.encoder.layer.2.crossattention_aud.self.query.bias', 'bert.encoder.layer.4.crossattention_aud.self.value.bias', 'bert.encoder.layer.0.crossattention_aud.self.value.bias', 'bert.encoder.layer.6.crossattention_vis.output.dense.bias', 'bert.encoder.layer.6.crossattention_vis.self.query.bias', 'bert.encoder.layer.0.output_query.LayerNorm.weight', 'bert.encoder.layer.4.crossattention_aud.output.dense.bias', 'bert.encoder.layer.2.crossattention_aud.output.dense.bias', 'bert.encoder.layer.8.crossattention_aud.output.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.query.bias', 'bert.encoder.layer.10.output_query.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_aud.self.key.bias', 'bert.encoder.layer.6.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.10.crossattention_aud.self.value.weight', 'bert.encoder.layer.8.crossattention_vis.self.value.weight', 'bert.encoder.layer.6.crossattention_aud.self.key.weight', 'bert.encoder.layer.0.crossattention_aud.self.key.weight', 'bert.encoder.layer.10.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.self.key.bias', 'bert.encoder.layer.6.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.2.crossattention_vis.self.key.bias', 'bert.encoder.layer.11.output_query.LayerNorm.bias', 'bert.encoder.layer.8.intermediate_query.dense.bias', 'bert.encoder.layer.1.output_query.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_vis.output.dense.weight', 'bert.encoder.layer.4.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.10.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.8.crossattention_vis.self.query.weight', 'bert.encoder.layer.11.intermediate_query.dense.bias', 'bert.encoder.layer.0.crossattention_vis.output.dense.bias', 'bert.encoder.layer.4.crossattention_vis.output.dense.weight', 'bert.encoder.layer.2.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.5.intermediate_query.dense.bias', 'bert.encoder.layer.10.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.3.output_query.LayerNorm.bias', 'bert.encoder.layer.2.crossattention_aud.self.value.weight', 'bert.encoder.layer.10.crossattention_vis.self.query.weight', 'bert.encoder.layer.6.crossattention_aud.output.dense.weight', 'bert.encoder.layer.8.crossattention_vis.self.value.bias', 'bert.encoder.layer.2.crossattention_aud.self.key.bias', 'bert.encoder.layer.6.output_query.LayerNorm.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertLMHeadModel: ['cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'bert.embeddings.token_type_embeddings.weight']
+- This IS expected if you are initializing BertLMHeadModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertLMHeadModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertLMHeadModel were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['bert.encoder.layer.1.output_query.dense.weight', 'bert.encoder.layer.6.crossattention_vis.output.dense.weight', 'bert.encoder.layer.0.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.9.output_query.LayerNorm.weight', 'bert.encoder.layer.10.crossattention_aud.self.key.bias', 'bert.encoder.layer.4.crossattention_vis.self.value.weight', 'bert.encoder.layer.4.output_query.LayerNorm.weight', 'bert.encoder.layer.0.crossattention_vis.self.key.bias', 'bert.encoder.layer.3.intermediate_query.dense.weight', 'bert.encoder.layer.0.output_query.dense.weight', 'bert.encoder.layer.2.crossattention_vis.self.value.weight', 'bert.encoder.layer.10.crossattention_vis.self.key.bias', 'bert.encoder.layer.4.crossattention_vis.self.query.weight', 'bert.encoder.layer.1.intermediate_query.dense.weight', 'bert.encoder.layer.4.crossattention_aud.self.key.weight', 'bert.encoder.layer.11.output_query.LayerNorm.weight', 'bert.encoder.layer.0.crossattention_aud.self.query.weight', 'bert.encoder.layer.2.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.9.intermediate_query.dense.bias', 'bert.encoder.layer.6.crossattention_aud.self.value.bias', 'bert.encoder.layer.0.intermediate_query.dense.bias', 'bert.encoder.layer.2.output_query.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_vis.self.value.weight', 'bert.encoder.layer.0.crossattention_aud.self.key.bias', 'bert.encoder.layer.10.output_query.dense.weight', 'bert.encoder.layer.4.crossattention_vis.output.dense.weight', 'bert.encoder.layer.0.crossattention_vis.self.query.bias', 'bert.encoder.layer.2.crossattention_vis.self.key.bias', 'bert.encoder.layer.2.intermediate_query.dense.weight', 'bert.encoder.layer.0.crossattention_aud.self.query.bias', 'bert.encoder.layer.8.crossattention_vis.self.query.bias', 'bert.encoder.layer.7.output_query.LayerNorm.bias', 'bert.encoder.layer.10.crossattention_vis.output.dense.weight', 'bert.encoder.layer.11.output_query.dense.bias', 'bert.encoder.layer.4.crossattention_aud.self.query.weight', 'bert.encoder.layer.6.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.8.crossattention_aud.self.value.bias', 'bert.encoder.layer.0.crossattention_aud.self.value.bias', 'bert.encoder.layer.2.crossattention_aud.output.dense.weight', 'bert.encoder.layer.2.output_query.LayerNorm.weight', 'bert.encoder.layer.4.crossattention_aud.output.dense.weight', 'bert.encoder.layer.8.intermediate_query.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.key.bias', 'bert.encoder.layer.4.crossattention_aud.self.value.bias', 'bert.encoder.layer.6.crossattention_vis.self.key.weight', 'bert.encoder.layer.2.crossattention_aud.self.value.weight', 'bert.encoder.layer.4.crossattention_aud.self.query.bias', 'bert.encoder.layer.10.crossattention_aud.self.key.weight', 'bert.encoder.layer.1.intermediate_query.dense.bias', 'bert.encoder.layer.6.crossattention_vis.self.query.bias', 'bert.encoder.layer.10.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.0.output_query.dense.bias', 'bert.encoder.layer.4.crossattention_aud.self.value.weight', 'bert.encoder.layer.4.crossattention_vis.self.key.weight', 'bert.encoder.layer.2.output_query.dense.weight', 'bert.encoder.layer.8.crossattention_aud.self.value.weight', 'bert.encoder.layer.3.intermediate_query.dense.bias', 'bert.encoder.layer.6.crossattention_aud.self.query.bias', 'bert.encoder.layer.4.output_query.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_vis.output.dense.bias', 'bert.encoder.layer.8.crossattention_aud.output.dense.weight', 'bert.encoder.layer.0.crossattention_vis.output.dense.bias', 'bert.encoder.layer.2.crossattention_vis.output.dense.weight', 'bert.encoder.layer.11.intermediate_query.dense.weight', 'bert.encoder.layer.4.crossattention_vis.self.key.bias', 'bert.encoder.layer.8.output_query.LayerNorm.bias', 'bert.encoder.layer.0.output_query.LayerNorm.bias', 'bert.encoder.layer.2.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.4.crossattention_vis.output.dense.bias', 'bert.encoder.layer.4.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.0.crossattention_vis.self.key.weight', 'bert.encoder.layer.2.crossattention_vis.self.query.weight', 'bert.encoder.layer.9.output_query.dense.bias', 'bert.encoder.layer.10.crossattention_vis.self.query.bias', 'bert.encoder.layer.6.intermediate_query.dense.weight', 'bert.encoder.layer.10.intermediate_query.dense.weight', 'bert.encoder.layer.6.crossattention_aud.self.key.weight', 'cls.predictions.decoder.weight', 'bert.encoder.layer.8.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.8.output_query.dense.weight', 'bert.encoder.layer.2.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.6.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_vis.self.key.weight', 'bert.encoder.layer.0.crossattention_vis.self.value.weight', 'bert.encoder.layer.10.crossattention_vis.self.query.weight', 'bert.encoder.layer.4.crossattention_aud.self.key.bias', 'bert.encoder.layer.1.output_query.dense.bias', 'bert.encoder.layer.6.output_query.dense.weight', 'bert.encoder.layer.6.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.0.crossattention_aud.output.dense.weight', 'bert.encoder.layer.6.crossattention_aud.self.value.weight', 'bert.encoder.layer.10.crossattention_aud.output.dense.weight', 'bert.encoder.layer.5.intermediate_query.dense.bias', 'bert.encoder.layer.8.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.10.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.6.output_query.LayerNorm.bias', 'bert.encoder.layer.8.crossattention_aud.output.dense.bias', 'bert.encoder.layer.10.crossattention_vis.output.dense.bias', 'bert.encoder.layer.2.crossattention_vis.output.dense.bias', 'bert.encoder.layer.2.crossattention_aud.self.value.bias', 'bert.encoder.layer.2.crossattention_vis.self.query.bias', 'bert.encoder.layer.10.crossattention_vis.self.value.bias', 'bert.encoder.layer.6.crossattention_aud.self.key.bias', 'bert.encoder.layer.11.intermediate_query.dense.bias', 'bert.encoder.layer.2.crossattention_aud.output.dense.bias', 'bert.encoder.layer.4.output_query.dense.bias', 'bert.encoder.layer.0.crossattention_aud.self.value.weight', 'bert.encoder.layer.2.crossattention_aud.self.key.weight', 'bert.encoder.layer.2.crossattention_vis.self.key.weight', 'bert.encoder.layer.9.output_query.dense.weight', 'bert.encoder.layer.7.intermediate_query.dense.bias', 'bert.encoder.layer.0.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.10.intermediate_query.dense.bias', 'bert.encoder.layer.5.output_query.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_vis.self.value.bias', 'bert.encoder.layer.5.intermediate_query.dense.weight', 'bert.encoder.layer.1.output_query.LayerNorm.bias', 'bert.encoder.layer.3.output_query.dense.bias', 'bert.encoder.layer.4.crossattention_vis.self.query.bias', 'bert.encoder.layer.8.crossattention_vis.self.key.bias', 'bert.encoder.layer.10.crossattention_vis.self.value.weight', 'bert.encoder.layer.8.output_query.LayerNorm.weight', 'bert.encoder.layer.2.output_query.dense.bias', 'bert.encoder.layer.9.output_query.LayerNorm.bias', 'bert.encoder.layer.7.output_query.dense.bias', 'bert.encoder.layer.0.crossattention_vis.self.value.bias', 'bert.encoder.layer.0.crossattention_aud.self.key.weight', 'bert.encoder.layer.11.output_query.LayerNorm.bias', 'bert.encoder.layer.0.crossattention_vis.self.query.weight', 'bert.encoder.layer.8.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.0.crossattention_aud.output.dense.bias', 'bert.encoder.layer.4.intermediate_query.dense.bias', 'bert.encoder.layer.4.intermediate_query.dense.weight', 'bert.encoder.layer.4.crossattention_aud.output.dense.bias', 'bert.encoder.layer.8.crossattention_vis.output.dense.bias', 'bert.encoder.layer.0.crossattention_vis.output.dense.weight', 'bert.encoder.layer.8.intermediate_query.dense.weight', 'bert.encoder.layer.10.output_query.LayerNorm.weight', 'bert.encoder.layer.7.output_query.dense.weight', 'bert.encoder.layer.11.output_query.dense.weight', 'bert.encoder.layer.2.crossattention_vis.self.value.bias', 'bert.encoder.layer.9.intermediate_query.dense.weight', 'bert.encoder.layer.4.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.1.output_query.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_aud.output.dense.weight', 'bert.encoder.layer.4.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_vis.self.query.weight', 'bert.encoder.layer.7.intermediate_query.dense.weight', 'bert.encoder.layer.10.output_query.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.query.weight', 'bert.encoder.layer.3.output_query.LayerNorm.weight', 'bert.encoder.layer.0.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.10.crossattention_vis.self.key.weight', 'bert.encoder.layer.8.crossattention_vis.self.value.weight', 'bert.encoder.layer.8.crossattention_vis.self.query.weight', 'bert.encoder.layer.2.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.8.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.3.output_query.LayerNorm.bias', 'bert.encoder.layer.10.crossattention_aud.output.dense.bias', 'bert.encoder.layer.10.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.6.output_query.LayerNorm.weight', 'bert.encoder.layer.2.crossattention_aud.self.query.weight', 'bert.encoder.layer.5.output_query.LayerNorm.bias', 'bert.encoder.layer.0.output_query.LayerNorm.weight', 'bert.encoder.layer.10.output_query.LayerNorm.bias', 'bert.encoder.layer.2.crossattention_aud.self.query.bias', 'bert.encoder.layer.6.crossattention_aud.output.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.query.bias', 'bert.encoder.layer.10.crossattention_aud.self.query.bias', 'bert.encoder.layer.6.crossattention_aud.self.query.weight', 'bert.encoder.layer.6.output_query.dense.bias', 'bert.encoder.layer.8.crossattention_vis.output.dense.weight', 'bert.encoder.layer.2.crossattention_aud.self.key.bias', 'bert.encoder.layer.8.output_query.dense.bias', 'bert.encoder.layer.8.crossattention_aud.self.key.weight', 'bert.encoder.layer.4.crossattention_aud.output.LayerNorm.weight', 'bert.encoder.layer.6.crossattention_vis.output.LayerNorm.weight', 'bert.encoder.layer.5.output_query.dense.weight', 'bert.encoder.layer.5.output_query.dense.bias', 'bert.encoder.layer.10.crossattention_aud.self.value.bias', 'bert.encoder.layer.6.crossattention_vis.self.key.bias', 'bert.encoder.layer.0.crossattention_aud.output.LayerNorm.bias', 'bert.encoder.layer.4.crossattention_vis.self.value.bias', 'bert.encoder.layer.7.output_query.LayerNorm.weight', 'bert.encoder.layer.3.output_query.dense.weight', 'bert.encoder.layer.6.intermediate_query.dense.bias', 'bert.encoder.layer.10.crossattention_aud.self.query.weight', 'bert.encoder.layer.2.intermediate_query.dense.bias', 'bert.encoder.layer.8.crossattention_vis.self.value.bias', 'bert.encoder.layer.10.crossattention_vis.output.LayerNorm.bias', 'bert.encoder.layer.4.output_query.dense.weight', 'bert.encoder.layer.10.crossattention_aud.self.value.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.29s/it]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.30s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.40it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.25it/s]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.40it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.25it/s]
+2025-08-24 15:54:47,731 [INFO] Missing keys []
+2025-08-24 15:54:47,731 [INFO] load checkpoint from /home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_audio/20250822202/checkpoint_best.pth
+2025-08-24 15:54:47,739 [INFO] Start training, max_iters=100000, in total 10 inner epochs.
+2025-08-24 15:54:47,739 [INFO] dataset_ratios not specified, datasets will be concatenated (map-style datasets) or chained (webdataset.DataPipeline).
+2025-08-24 15:54:47,739 [INFO] Loaded 20625 records for train split from the dataset.
+2025-08-24 15:54:47,739 [INFO] Loaded 2481 records for val split from the dataset.
+2025-08-24 15:54:47,739 [INFO] Loaded 5140 records for test split from the dataset.
+2025-08-24 15:54:49,640 [INFO] number of trainable parameters: 127928960
+2025-08-24 15:54:49,640 [INFO] Start training epoch 0, 10000 iters per inner epoch.
+PTBTokenizer tokenized 829 tokens at 32334.89 tokens per second.
+PTBTokenizer tokenized 989 tokens at 38160.14 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29645.58 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32434.93 tokens per second.
+Train: data epoch: [0]; inner epoch [0]  [    0/10000]  eta: 9:40:56  lr: 1.0000e-08  loss: 0.0004  time: 3.4856  data: 0.0000  max mem: 15132
+2025-08-24 15:54:53,131 [INFO] Reducer buckets have been rebuilt in this iteration.
+PTBTokenizer tokenized 834 tokens at 32147.69 tokens per second.
+PTBTokenizer tokenized 764 tokens at 29932.94 tokens per second.
+PTBTokenizer tokenized 649 tokens at 24975.59 tokens per second.
+PTBTokenizer tokenized 849 tokens at 33091.90 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32553.11 tokens per second.
+PTBTokenizer tokenized 944 tokens at 36629.35 tokens per second.
+PTBTokenizer tokenized 659 tokens at 26281.08 tokens per second.
+PTBTokenizer tokenized 819 tokens at 31599.97 tokens per second.
+PTBTokenizer tokenized 749 tokens at 28847.18 tokens per second.
+PTBTokenizer tokenized 789 tokens at 31081.22 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28806.22 tokens per second.
+PTBTokenizer tokenized 659 tokens at 26194.06 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31805.75 tokens per second.
+PTBTokenizer tokenized 934 tokens at 36107.23 tokens per second.
+PTBTokenizer tokenized 949 tokens at 36711.46 tokens per second.
+PTBTokenizer tokenized 859 tokens at 33563.17 tokens per second.
+PTBTokenizer tokenized 899 tokens at 35370.29 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30843.94 tokens per second.
+PTBTokenizer tokenized 849 tokens at 33293.68 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32587.51 tokens per second.
+PTBTokenizer tokenized 1009 tokens at 38119.11 tokens per second.
+PTBTokenizer tokenized 794 tokens at 31156.60 tokens per second.
+PTBTokenizer tokenized 859 tokens at 33063.32 tokens per second.
+PTBTokenizer tokenized 839 tokens at 31700.19 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28650.17 tokens per second.
+PTBTokenizer tokenized 904 tokens at 35289.62 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30628.16 tokens per second.
+PTBTokenizer tokenized 669 tokens at 25520.54 tokens per second.
+PTBTokenizer tokenized 704 tokens at 27766.61 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30400.96 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29291.20 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27646.57 tokens per second.
+PTBTokenizer tokenized 974 tokens at 36389.94 tokens per second.
+PTBTokenizer tokenized 879 tokens at 34536.56 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27198.19 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30347.55 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30640.61 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30169.34 tokens per second.
+PTBTokenizer tokenized 749 tokens at 28523.09 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27760.22 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31699.06 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29153.92 tokens per second.
+PTBTokenizer tokenized 739 tokens at 28428.10 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32480.96 tokens per second.
+PTBTokenizer tokenized 774 tokens at 30459.06 tokens per second.
+PTBTokenizer tokenized 969 tokens at 37061.40 tokens per second.
+PTBTokenizer tokenized 619 tokens at 24600.39 tokens per second.
+PTBTokenizer tokenized 909 tokens at 36051.98 tokens per second.
+PTBTokenizer tokenized 779 tokens at 29833.94 tokens per second.
+PTBTokenizer tokenized 839 tokens at 32628.77 tokens per second.
+PTBTokenizer tokenized 689 tokens at 26977.27 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28079.07 tokens per second.
+PTBTokenizer tokenized 754 tokens at 28180.06 tokens per second.
+PTBTokenizer tokenized 794 tokens at 31192.83 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24430.17 tokens per second.
+PTBTokenizer tokenized 789 tokens at 31043.70 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29173.44 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29982.92 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27975.49 tokens per second.
+PTBTokenizer tokenized 799 tokens at 30327.83 tokens per second.
+PTBTokenizer tokenized 869 tokens at 29463.20 tokens per second.
+PTBTokenizer tokenized 929 tokens at 35537.30 tokens per second.
+PTBTokenizer tokenized 739 tokens at 29053.86 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30582.73 tokens per second.
+PTBTokenizer tokenized 794 tokens at 30527.77 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31004.74 tokens per second.
+PTBTokenizer tokenized 769 tokens at 30350.94 tokens per second.
+PTBTokenizer tokenized 769 tokens at 30532.58 tokens per second.
+PTBTokenizer tokenized 874 tokens at 33749.00 tokens per second.
+PTBTokenizer tokenized 869 tokens at 33475.43 tokens per second.
+PTBTokenizer tokenized 769 tokens at 29862.53 tokens per second.
+PTBTokenizer tokenized 1009 tokens at 38599.99 tokens per second.
+PTBTokenizer tokenized 784 tokens at 30368.34 tokens per second.
+PTBTokenizer tokenized 1029 tokens at 39668.01 tokens per second.
+PTBTokenizer tokenized 719 tokens at 27602.48 tokens per second.
+PTBTokenizer tokenized 709 tokens at 28421.23 tokens per second.
+PTBTokenizer tokenized 754 tokens at 29290.35 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29092.59 tokens per second.
+PTBTokenizer tokenized 689 tokens at 27072.70 tokens per second.
+PTBTokenizer tokenized 659 tokens at 25023.10 tokens per second.
+PTBTokenizer tokenized 674 tokens at 26666.29 tokens per second.
+PTBTokenizer tokenized 774 tokens at 30365.57 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30128.01 tokens per second.
+PTBTokenizer tokenized 889 tokens at 34189.22 tokens per second.
+PTBTokenizer tokenized 734 tokens at 28916.28 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31764.51 tokens per second.
+PTBTokenizer tokenized 679 tokens at 26643.90 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27043.72 tokens per second.
+PTBTokenizer tokenized 749 tokens at 28766.72 tokens per second.
+PTBTokenizer tokenized 814 tokens at 31301.20 tokens per second.
+PTBTokenizer tokenized 569 tokens at 22722.18 tokens per second.
+PTBTokenizer tokenized 679 tokens at 26515.00 tokens per second.
+PTBTokenizer tokenized 739 tokens at 29000.00 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29278.11 tokens per second.
+PTBTokenizer tokenized 679 tokens at 27012.28 tokens per second.
+PTBTokenizer tokenized 839 tokens at 33356.84 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29502.76 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28729.18 tokens per second.
+PTBTokenizer tokenized 899 tokens at 34831.89 tokens per second.
+PTBTokenizer tokenized 689 tokens at 27148.73 tokens per second.
+PTBTokenizer tokenized 809 tokens at 32028.78 tokens per second.
+PTBTokenizer tokenized 874 tokens at 34411.90 tokens per second.
+PTBTokenizer tokenized 739 tokens at 28456.36 tokens per second.
+PTBTokenizer tokenized 819 tokens at 31749.98 tokens per second.
+PTBTokenizer tokenized 819 tokens at 32087.98 tokens per second.
+PTBTokenizer tokenized 684 tokens at 26561.20 tokens per second.
+PTBTokenizer tokenized 659 tokens at 26252.52 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30336.31 tokens per second.
+PTBTokenizer tokenized 939 tokens at 36183.42 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32503.16 tokens per second.
+PTBTokenizer tokenized 759 tokens at 28290.12 tokens per second.
+PTBTokenizer tokenized 889 tokens at 34136.78 tokens per second.
+PTBTokenizer tokenized 724 tokens at 27972.27 tokens per second.
+PTBTokenizer tokenized 944 tokens at 36694.03 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27138.10 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31711.31 tokens per second.
+PTBTokenizer tokenized 764 tokens at 30329.01 tokens per second.
+PTBTokenizer tokenized 859 tokens at 32821.87 tokens per second.
+PTBTokenizer tokenized 669 tokens at 26413.11 tokens per second.
+PTBTokenizer tokenized 829 tokens at 31845.03 tokens per second.
+PTBTokenizer tokenized 689 tokens at 26879.85 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29083.43 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27580.68 tokens per second.
+PTBTokenizer tokenized 669 tokens at 26134.61 tokens per second.
+PTBTokenizer tokenized 799 tokens at 31245.42 tokens per second.
+PTBTokenizer tokenized 929 tokens at 35600.89 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31732.18 tokens per second.
+PTBTokenizer tokenized 749 tokens at 28698.71 tokens per second.
+PTBTokenizer tokenized 799 tokens at 30300.96 tokens per second.
+PTBTokenizer tokenized 1009 tokens at 39248.46 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24608.85 tokens per second.
+PTBTokenizer tokenized 869 tokens at 34016.86 tokens per second.
+PTBTokenizer tokenized 934 tokens at 35867.93 tokens per second.
+PTBTokenizer tokenized 949 tokens at 37261.93 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24578.91 tokens per second.
+PTBTokenizer tokenized 739 tokens at 29110.01 tokens per second.
+PTBTokenizer tokenized 669 tokens at 26348.64 tokens per second.
+PTBTokenizer tokenized 874 tokens at 33741.04 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24576.86 tokens per second.
+PTBTokenizer tokenized 859 tokens at 33803.93 tokens per second.
+PTBTokenizer tokenized 794 tokens at 30860.75 tokens per second.
+PTBTokenizer tokenized 739 tokens at 28877.60 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29331.47 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32481.61 tokens per second.
+PTBTokenizer tokenized 759 tokens at 29603.75 tokens per second.
+PTBTokenizer tokenized 954 tokens at 36472.84 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27956.43 tokens per second.
+PTBTokenizer tokenized 849 tokens at 32574.37 tokens per second.
+PTBTokenizer tokenized 874 tokens at 33451.01 tokens per second.
+PTBTokenizer tokenized 859 tokens at 33115.12 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27801.73 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30855.36 tokens per second.
+PTBTokenizer tokenized 794 tokens at 30883.31 tokens per second.
+PTBTokenizer tokenized 884 tokens at 35106.46 tokens per second.
+PTBTokenizer tokenized 679 tokens at 26441.03 tokens per second.
+PTBTokenizer tokenized 719 tokens at 28367.20 tokens per second.
+PTBTokenizer tokenized 769 tokens at 29424.90 tokens per second.
+PTBTokenizer tokenized 789 tokens at 30716.81 tokens per second.
+PTBTokenizer tokenized 589 tokens at 23392.52 tokens per second.
+PTBTokenizer tokenized 669 tokens at 26631.63 tokens per second.
+PTBTokenizer tokenized 744 tokens at 28820.08 tokens per second.
+PTBTokenizer tokenized 759 tokens at 30164.43 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27748.00 tokens per second.
+PTBTokenizer tokenized 849 tokens at 33391.26 tokens per second.
+PTBTokenizer tokenized 774 tokens at 30374.01 tokens per second.
+PTBTokenizer tokenized 734 tokens at 28546.88 tokens per second.
+PTBTokenizer tokenized 739 tokens at 27877.82 tokens per second.
+PTBTokenizer tokenized 959 tokens at 37131.56 tokens per second.
+PTBTokenizer tokenized 804 tokens at 31029.08 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29827.34 tokens per second.
+PTBTokenizer tokenized 539 tokens at 21543.87 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27576.09 tokens per second.
+PTBTokenizer tokenized 804 tokens at 31272.15 tokens per second.
+PTBTokenizer tokenized 879 tokens at 33344.94 tokens per second.
+PTBTokenizer tokenized 889 tokens at 34686.79 tokens per second.
+PTBTokenizer tokenized 939 tokens at 36105.40 tokens per second.
+PTBTokenizer tokenized 944 tokens at 36316.88 tokens per second.
+PTBTokenizer tokenized 899 tokens at 35053.20 tokens per second.
+PTBTokenizer tokenized 679 tokens at 26707.73 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27010.26 tokens per second.
+PTBTokenizer tokenized 904 tokens at 34899.98 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32046.30 tokens per second.
+PTBTokenizer tokenized 889 tokens at 34506.10 tokens per second.
+PTBTokenizer tokenized 769 tokens at 29324.16 tokens per second.
+PTBTokenizer tokenized 714 tokens at 28327.53 tokens per second.
+PTBTokenizer tokenized 904 tokens at 35462.09 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27291.86 tokens per second.
+PTBTokenizer tokenized 939 tokens at 35932.37 tokens per second.
+PTBTokenizer tokenized 929 tokens at 34830.39 tokens per second.
+PTBTokenizer tokenized 814 tokens at 31370.94 tokens per second.
+PTBTokenizer tokenized 749 tokens at 28997.62 tokens per second.
+PTBTokenizer tokenized 889 tokens at 34036.00 tokens per second.
+PTBTokenizer tokenized 704 tokens at 26955.17 tokens per second.
+PTBTokenizer tokenized 869 tokens at 33308.80 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28906.29 tokens per second.
+PTBTokenizer tokenized 759 tokens at 28898.18 tokens per second.
+PTBTokenizer tokenized 769 tokens at 30213.07 tokens per second.
+PTBTokenizer tokenized 714 tokens at 27874.08 tokens per second.
+PTBTokenizer tokenized 649 tokens at 25237.48 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32815.02 tokens per second.
+Train: data epoch: [0]; inner epoch [0]  [   50/10000]  eta: 7:15:23  lr: 1.2475e-08  loss: 0.0001  time: 2.5654  data: 0.0000  max mem: 20668
+PTBTokenizer tokenized 674 tokens at 25758.07 tokens per second.
+PTBTokenizer tokenized 819 tokens at 32141.27 tokens per second.
+PTBTokenizer tokenized 659 tokens at 25596.32 tokens per second.
+PTBTokenizer tokenized 709 tokens at 28060.46 tokens per second.
+PTBTokenizer tokenized 919 tokens at 36085.44 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30252.63 tokens per second.
+PTBTokenizer tokenized 799 tokens at 30864.29 tokens per second.
+PTBTokenizer tokenized 809 tokens at 31655.11 tokens per second.
+PTBTokenizer tokenized 834 tokens at 31829.91 tokens per second.
+PTBTokenizer tokenized 1149 tokens at 43599.73 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27651.42 tokens per second.
+PTBTokenizer tokenized 849 tokens at 31883.03 tokens per second.
+PTBTokenizer tokenized 749 tokens at 29051.15 tokens per second.
+PTBTokenizer tokenized 729 tokens at 28692.47 tokens per second.
+PTBTokenizer tokenized 699 tokens at 27451.47 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24212.93 tokens per second.
+PTBTokenizer tokenized 874 tokens at 34160.10 tokens per second.
+PTBTokenizer tokenized 944 tokens at 36864.15 tokens per second.
+PTBTokenizer tokenized 709 tokens at 27754.29 tokens per second.
+PTBTokenizer tokenized 829 tokens at 32097.42 tokens per second.
+PTBTokenizer tokenized 794 tokens at 31148.50 tokens per second.
+PTBTokenizer tokenized 1014 tokens at 39204.90 tokens per second.
+PTBTokenizer tokenized 799 tokens at 30776.23 tokens per second.
+PTBTokenizer tokenized 919 tokens at 35186.13 tokens per second.
+PTBTokenizer tokenized 919 tokens at 35525.12 tokens per second.
+PTBTokenizer tokenized 924 tokens at 35766.86 tokens per second.
+PTBTokenizer tokenized 659 tokens at 25448.09 tokens per second.
+PTBTokenizer tokenized 839 tokens at 32823.81 tokens per second.
+PTBTokenizer tokenized 754 tokens at 29338.38 tokens per second.
+PTBTokenizer tokenized 794 tokens at 30582.39 tokens per second.
+PTBTokenizer tokenized 669 tokens at 25418.71 tokens per second.
+PTBTokenizer tokenized 719 tokens at 27912.52 tokens per second.
+PTBTokenizer tokenized 654 tokens at 25374.47 tokens per second.
+PTBTokenizer tokenized 1064 tokens at 41185.29 tokens per second.
+PTBTokenizer tokenized 629 tokens at 24107.77 tokens per second.
+PTBTokenizer tokenized 869 tokens at 33838.62 tokens per second.
+PTBTokenizer tokenized 799 tokens at 31234.18 tokens per second.
+PTBTokenizer tokenized 839 tokens at 32432.22 tokens per second.
+PTBTokenizer tokenized 699 tokens at 26641.42 tokens per second.
+PTBTokenizer tokenized 779 tokens at 30699.90 tokens per second.
+WARNING:torch.distributed.elastic.agent.server.api:Received 1 death signal, shutting down workers
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 1490708 closing signal SIGHUP
+WARNING:torch.distributed.elastic.multiprocessing.api:Sending process 1490712 closing signal SIGHUP
+Traceback (most recent call last):
+  File "/home/abrimont/partage/mllm-video-captioner/venv/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 346, in wrapper
+    return f(*args, **kwargs)
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/run.py", line 794, in main
+    run(args)
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/run.py", line 785, in run
+    elastic_launch(
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 134, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/launcher/api.py", line 241, in launch_agent
+    result = agent.run()
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/elastic/metrics/api.py", line 129, in wrapper
+    result = f(*args, **kwargs)
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/elastic/agent/server/api.py", line 723, in run
+    result = self._invoke_run(role)
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/elastic/agent/server/api.py", line 864, in _invoke_run
+    time.sleep(monitor_interval)
+  File "/home/abrimont/partage/mllm-video-captioner/venv/lib/python3.8/site-packages/torch/distributed/elastic/multiprocessing/api.py", line 62, in _terminate_process_handler
+    raise SignalException(f"Process {os.getpid()} got signal: {sigval}", sigval=sigval)
+torch.distributed.elastic.multiprocessing.api.SignalException: Process 1490661 got signal: 1

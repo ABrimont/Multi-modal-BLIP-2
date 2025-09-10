@@ -1,0 +1,41 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+
+# --- Environnements virtuels ---
+venv/
+.env/
+.venv/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- Logs & sorties ---
+*.log
+*.out
+*.err
+
+# --- Checkpoints / poids modèles ---
+*.pt
+*.pth
+*.ckpt
+
+# --- Données volumineuses ---
+data/
+datasets/
+*.zip
+*.tar
+*.gz
+
+# --- Config IDE / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# --- Sous-dépôts git ---
+*/.git/

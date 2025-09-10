@@ -1,0 +1,88 @@
+model:
+  arch: blip2_t5_multimodal
+  model_type: pretrain_flant5xl
+  load_pretrained: train
+  load_finetuned: False
+
+  # pretrained: "/home/abrimont/partage/mllm-video-captioner/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
+  pretrained: "/home/abrimont/partage/mllm-video-captioner/blip2_pretrained_flant5xl.pth"
+  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/no_lora_PT_vis_weight_only/checkpoint_best.pth"
+  # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250718090/checkpoint_9000.pth"
+  
+  image_size: 224
+  drop_path_rate: 0
+  use_grad_checkpoint: False
+  vit_precision: "fp16"
+  freeze_vit: True
+  freeze_audio: True
+
+  # LoRA
+  lora: True
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+  # Q-Former
+  num_query_token: 32
+
+  # T5
+  t5_model: "google/flan-t5-xl"
+
+  # generation configs
+  prompt: "a video of"
+
+datasets:
+  msrvtt_caption_audio: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "alpro_video_train"
+          n_frms: 8
+          image_size: 224
+        eval:
+          name: "alpro_video_eval"
+          n_frms: 8
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"
+          
+run:
+  runner: runner_iter
+  max_iters: 40000 
+  iters_per_inner_epoch: 2000
+
+  task: captioning
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 3e-5
+  min_lr: 1e-5
+  warmup_lr: 1e-8
+  warmup_steps: 0
+  weight_decay: 0.05
+  max_epoch: 20
+  batch_size_train: 16
+  batch_size_eval: 16
+  num_workers: 2
+  accum_grad_iters: 2
+
+  max_len: 32
+  min_len: 5
+  num_beams: 5
+
+  seed: 42
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio"
+
+  amp: True
+  resume_ckpt_path: null
+
+  evaluate: False
+  train_splits: ["train"]
+  valid_splits: ["val"]
+  test_splits: ["test"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True

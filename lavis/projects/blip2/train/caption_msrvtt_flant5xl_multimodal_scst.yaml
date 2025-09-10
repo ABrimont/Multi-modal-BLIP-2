@@ -1,0 +1,87 @@
+model:
+  arch: blip2_t5_multimodal
+  model_type: pretrain_flant5xl
+  load_pretrained: False
+  load_finetuned: True
+
+  # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250716115/checkpoint_best.pth"
+  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/no_lora_PT_weights_aud_vis/checkpoint_best.pth"
+
+  image_size: 224
+  drop_path_rate: 0
+  use_grad_checkpoint: False
+  vit_precision: "fp16"
+  freeze_vit: True
+
+  # LoRA
+  lora: True
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+
+  # Q-Former
+  num_query_token: 32
+
+  # T5
+  t5_model: "google/flan-t5-xl"
+
+  # generation configs
+  prompt: "a video of"
+
+  scst: True # https://arxiv.org/abs/1612.00563
+
+datasets:
+  msrvtt_caption_audio: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "alpro_video_train"
+          n_frms: 16
+          image_size: 224
+        eval:
+          name: "alpro_video_eval"
+          n_frms: 16
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"
+
+run:
+  runner: runner_iter
+  max_iters: 32500
+  iters_per_inner_epoch: 3250
+
+  task: captioning
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 1e-5
+  min_lr: 1e-6
+  warmup_lr: 1e-8
+  warmup_steps: 3250
+  weight_decay: 0.05
+  max_epoch: 10
+  batch_size_train: 1 ### RTX-A6000
+  batch_size_eval: 16
+  num_workers: 2
+  accum_grad_iters: 8
+
+  max_len: 32
+  min_len: 5
+  num_beams: 5
+
+  seed: 42
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio_scst"
+
+  amp: True
+  resume_ckpt_path: null
+
+  evaluate: False
+  train_splits: ["train"]
+  valid_splits: ["val"]
+  test_splits: ["test"]
+
+  device: "cuda"
+  world_size: 2
+  dist_url: "env://"
+  distributed: True
