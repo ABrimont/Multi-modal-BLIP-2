@@ -1,10 +1,11 @@
 model:
   arch: blip2_t5
   model_type: pretrain_flant5xl
-  load_pretrained: True
-  load_finetuned: False
+  load_pretrained: False
+  load_finetuned: True
 
   pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
+  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex/20251122105/checkpoint_best.pth"
 
   image_size: 224
   drop_path_rate: 0
@@ -32,11 +33,11 @@ datasets:
     vis_processor:
         train:
           name: "alpro_video_train"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
         eval:
           name: "alpro_video_eval"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
     text_processor:
         train:
@@ -45,21 +46,21 @@ datasets:
           name: "blip_caption"
 
 run:
-  # runner: runner_iter
-  # max_iters: 15000 
-  # iters_per_inner_epoch: 1000
+  runner: runner_iter
+  max_iters: 10000 
+  iters_per_inner_epoch: 1
 
   task: captioning
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
-  init_lr: 5e-5
-  min_lr: 1e-5
+  init_lr: 1e-5
+  min_lr: 1e-6
   warmup_lr: 1e-8
   warmup_steps: 1000
   weight_decay: 0.05
   max_epoch: 20
-  batch_size_train: 64
-  batch_size_eval: 32
+  batch_size_train: 16
+  batch_size_eval: 16
   num_workers: 4
   accum_grad_iters: 1
 
@@ -75,10 +76,10 @@ run:
 
   evaluate: False
   train_splits: ["train"]
-  valid_splits: ["val"]
+  valid_splits: ["test"]
   test_splits: ["test"]
 
   device: "cuda"
-  world_size: 1
+  world_size: 2
   dist_url: "env://"
   distributed: True

@@ -1,12 +1,12 @@
 model:
-  arch: blip2_t5_multimodal
+  arch: blip2_t5
   model_type: pretrain_flant5xl
   load_pretrained: False
   load_finetuned: True
 
   # pretrained: "/home/anonymous/new_ssd/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_audio/noPT_video_of_no_lora/checkpoint_best.pth"
-
+  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex/20251122105/checkpoint_best.pth"
+  
   image_size: 224
   drop_path_rate: 0
   use_grad_checkpoint: False
@@ -14,10 +14,10 @@ model:
   freeze_vit: True
 
   # LoRA
-  lora: False
-  lora_r: 16
-  lora_alpha: 32
-  lora_dropout: 0.05
+  lora: True
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.2
 
   # Q-Former
   num_query_token: 32
@@ -29,15 +29,15 @@ model:
   prompt: "describe the video:"
 
 datasets:
-  vatex_caption_audio: # name of the dataset builder
+  vatex_caption: # name of the dataset builder
     vis_processor:
         train:
           name: "alpro_video_train"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
         eval:
           name: "alpro_video_eval"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
     text_processor:
         train:

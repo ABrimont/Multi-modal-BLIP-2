@@ -54,22 +54,89 @@ class BaseModel(nn.Module):
         logging.info("load checkpoint from %s" % url_or_filename)
 
         return msg
-
-    @classmethod
-    def from_pretrained(cls, model_type):
+    
+    def load_from_pretrained_from_unimodal(self, url_or_filename):
         """
-        Build a pretrained model from default configuration file, specified by model_type.
-
-        Args:
-            - model_type (str): model type, specifying architecture and checkpoints.
-
-        Returns:
-            - model (nn.Module): pretrained or finetuned model, depending on the configuration.
+        Charger un checkpoint BLIP (unimodal) et l'adapter pour un modèle multimodal.
+        - Les poids crossattention et query → suffixés en `_vis`
+        - Les poids FFN (intermediate, output) → mappés vers `_vis`
+        - La branche audio (`*_aud`) reste aléatoire
         """
-        model_cfg = OmegaConf.load(cls.default_config_path(model_type)).model
-        model = cls.from_config(model_cfg)
 
-        return model
+        # ---- 1) Charger le checkpoint
+        if is_url(url_or_filename):
+            cached_file = download_cached_file(
+                url_or_filename, check_hash=False, progress=True
+            )
+            checkpoint = torch.load(cached_file, map_location="cpu")
+        elif os.path.isfile(url_or_filename):
+            checkpoint = torch.load(url_or_filename, map_location="cpu")
+        else:
+            raise RuntimeError("checkpoint url or path is invalid")
+
+        state_dict = checkpoint["model"] if "model" in checkpoint else checkpoint
+
+        # ---- 2) Transferring BLIP-2 weights when necessary
+        new_state_dict = {}
+        for k, v in state_dict.items():
+            if "crossattention" in k:
+                new_state_dict[k.replace("crossattention", "crossattention_vis")] = v
+                # new_state_dict[k.replace("crossattention", "crossattention_aud")] = v
+
+            # elif ".intermediate." in k:
+            #     new_state_dict[k.replace(".intermediate.", ".intermediate_vis.")] = v
+            #     new_state_dict[k.replace(".intermediate.", ".intermediate_aud.")] = v
+
+            # elif ".output." in k and "crossattention" not in k:
+            #     new_state_dict[k.replace(".output.", ".output_vis.")] = v
+            #     new_state_dict[k.replace(".output.", ".output_aud.")] = v
+
+            elif "intermediate_query" in k:
+                new_state_dict[k.replace("intermediate_query", "intermediate_query_vis")] = v
+                # new_state_dict[k.replace("intermediate_query", "intermediate_query_aud")] = v
+
+            elif "output_query" in k:
+                new_state_dict[k.replace("output_query", "output_query_vis")] = v
+                # new_state_dict[k.replace("output_query", "output_query_aud")] = v
+
+            elif "t5_proj" in k:
+                new_state_dict[k] = v
+                # new_state_dict[k.replace("t5_proj", "t5_proj_aud")] = v
+                
+            else:
+                # inchangé
+                new_state_dict[k] = v
+
+
+        # ---- 3) Corriger query_tokens si dimension différente
+        if "query_tokens" in new_state_dict:
+            ckpt_q = new_state_dict["query_tokens"]       # ex: (1, 32, d)
+            model_q = self.query_tokens                   # ex: (1, 48, d)
+
+            if ckpt_q.shape[1] != model_q.shape[1]:
+                new_q = model_q.clone()
+                n_copy = min(ckpt_q.shape[1], model_q.shape[1])
+                new_q[:, :n_copy] = ckpt_q[:, :n_copy]
+                if model_q.shape[1] > ckpt_q.shape[1]:
+                    new_q[:, ckpt_q.shape[1]:].normal_(mean=0.0, std=0.02)
+                new_state_dict["query_tokens"] = new_q
+
+                logging.info(
+                    f"Expanded query_tokens: copied {n_copy}, "
+                    f"reinitialized {model_q.shape[1] - ckpt_q.shape[1]}"
+                )
+
+        # ---- 4) Charger les poids
+        msg = self.load_state_dict(new_state_dict, strict=False)
+
+        # ---- 5) Vérifier ce qui manque
+        qformer_missing = [k for k in msg.missing_keys if "qformer" in k.lower()]
+        logging.info("Missing keys in QFormer (normal: only audio): %s", qformer_missing)
+
+        return msg
+
+
+
 
     @classmethod
     def default_config_path(cls, model_type):
@@ -100,6 +167,30 @@ class BaseModel(nn.Module):
                 pretrain_path = cfg.get("pretrained", None)
                 assert "Found load_finetuned is False, but pretrain_path is None."
                 self.load_from_pretrained(url_or_filename=pretrain_path, **kwargs)
+
+    def load_checkpoint_from_config_multimodal(self, cfg, **kwargs):
+        """
+        Load checkpoint as specified in the config file.
+
+        If load_finetuned is True, load the finetuned model; otherwise, load the pretrained model.
+        When loading the pretrained model, each task-specific architecture may define their
+        own load_from_pretrained() method.
+        """
+        load_finetuned = cfg.get("load_finetuned", True)
+        if load_finetuned:
+            finetune_path = cfg.get("finetuned", None)
+            assert (
+                finetune_path is not None
+            ), "Found load_finetuned is True, but finetune_path is None."
+            self.load_checkpoint(url_or_filename=finetune_path)
+        else:
+            load_pretrained = cfg.get("load_pretrained", True)
+            if load_pretrained:
+                # load pre-trained weights
+                pretrain_path = cfg.get("pretrained", None)
+                assert "Found load_finetuned is False, but pretrain_path is None."
+                self.load_from_pretrained_from_unimodal(url_or_filename=pretrain_path, **kwargs)
+
 
 
     def before_evaluation(self, **kwargs):

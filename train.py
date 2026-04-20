@@ -4,6 +4,16 @@
  SPDX-License-Identifier: BSD-3-Clause
  For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 """
+import os
+
+# ⚡ Forcer les chemins HuggingFace AVANT tout import transformers
+# cache_dir = "/home/abrimont/partage/mllm-video-captioner/.cache/huggingface"
+# os.environ["HF_HOME"] = cache_dir
+# os.environ["TRANSFORMERS_CACHE"] = cache_dir
+# os.environ["XDG_CACHE_HOME"] = "/home/abrimont/partage/mllm-video-captioner/.cache"
+
+# print(">>> HF_HOME forcé à:", os.environ["HF_HOME"])
+
 
 import argparse
 import os
@@ -98,6 +108,30 @@ def main():
     )
     runner.train()
 
-
 if __name__ == "__main__":
+    import os
+    import torch.multiprocessing as mp
+
+    # # --- Debug + stabilité NCCL ---
+    # os.environ.setdefault("NCCL_DEBUG", "INFO")
+    # os.environ.setdefault("TORCH_NCCL_BLOCKING_WAIT", "1")
+    # os.environ.setdefault("TORCH_NCCL_ASYNC_ERROR_HANDLING", "1")
+    # os.environ.setdefault("NCCL_P2P_DISABLE", "1")     # utile sur RTX 4090
+    # os.environ.setdefault("NCCL_IB_DISABLE", "1")
+    # os.environ.setdefault("NCCL_SHM_DISABLE", "1")
+
+    # # --- CUDA Debug (OOM explicites) ---
+    # os.environ.setdefault("TORCH_USE_CUDA_DSA", "1")
+    # os.environ.setdefault("CUDA_DEVICE_MAX_CONNECTIONS", "1")
+
+    # --- Tokenizers / Threads ---
+    # os.environ["TOKENIZERS_PARALLELISM"] = "false"
+    # os.environ["OMP_NUM_THREADS"] = "1"
+    # os.environ["MKL_NUM_THREADS"] = "1"
+
+    # --- Multiprocessing ---
+    # mp.set_start_method("spawn", force=True)
+    # mp.set_sharing_strategy("file_descriptor")
+
+    # --- Launch main training ---
     main()

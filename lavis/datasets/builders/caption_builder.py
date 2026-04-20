@@ -18,6 +18,26 @@ from lavis.datasets.datasets.video_caption_datasets import (
     VideoCaptionEvalDataset,
 )
 
+from lavis.datasets.datasets.video_caption_datasets import (
+    VideoCaptionDataset,
+    VideoCaptionEvalDataset,
+)
+
+from lavis.datasets.datasets.video_caption_datasets_audio import (
+    VideoCaptionDatasetAudio,
+    VideoCaptionEvalDatasetAudio,
+)
+
+
+from lavis.datasets.datasets.video_caption_datasets_audio_vatex import (
+    VideoCaptionDatasetAudioVATEX,
+    VideoCaptionEvalDatasetAudioVATEX,
+)
+
+from lavis.datasets.datasets.video_caption_AudioCaps import (
+    VideoCaptionDatasetAudioCaps,
+    VideoCaptionEvalDatasetAudioCaps,
+)
 
 @registry.register_builder("coco_caption")
 class COCOCapBuilder(BaseDatasetBuilder):
@@ -56,6 +76,16 @@ class MSRVTTCapBuilder(BaseDatasetBuilder):
         "default": "configs/datasets/msrvtt/defaults_cap.yaml",
     }
 
+@registry.register_builder("msrvtt_caption_audio")
+class MSRVTTCapBuilder(BaseDatasetBuilder):
+    train_dataset_cls = VideoCaptionDatasetAudio
+    eval_dataset_cls = VideoCaptionEvalDatasetAudio
+
+    DATASET_CONFIG_DICT = {
+        "default": "/home/abrimont/partage/mllm-video-captioner/lavis/configs/datasets/msrvtt_audio/defaults_cap.yaml",
+    }
+
+
 
 @registry.register_builder("msvd_caption")
 class MSVDCapBuilder(BaseDatasetBuilder):
@@ -83,4 +113,23 @@ class VATEXCapBuilder(BaseDatasetBuilder):
 
     DATASET_CONFIG_DICT = {
         "default": "configs/datasets/vatex/defaults_cap.yaml",
+    }
+
+@registry.register_builder("vatex_caption_audio")
+class VATEXAudioCapBuilder(BaseDatasetBuilder):
+    train_dataset_cls = VideoCaptionDatasetAudioVATEX
+    eval_dataset_cls = VideoCaptionEvalDatasetAudioVATEX
+
+    DATASET_CONFIG_DICT = {
+        "default": "/home/abrimont/partage/mllm-video-captioner/lavis/configs/datasets/vatex_audio/defaults_cap.yaml",
+    }
+
+
+@registry.register_builder("AudioCaps_caption")
+class AudioCapsCapBuilder(BaseDatasetBuilder):
+    train_dataset_cls = VideoCaptionDatasetAudioCaps
+    eval_dataset_cls = VideoCaptionEvalDatasetAudioCaps
+
+    DATASET_CONFIG_DICT = {
+        "default": "/home/abrimont/partage/mllm-video-captioner/lavis/configs/datasets/AudioCaps/defaults_cap.yaml",
     }

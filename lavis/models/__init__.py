@@ -39,27 +39,30 @@ from lavis.models.blip2_models.blip2_image_text_matching import Blip2ITM
 
 from lavis.models.blip2_models.blip2_t5_instruct import Blip2T5Instruct
 from lavis.models.blip2_models.blip2_vicuna_instruct import Blip2VicunaInstruct
+from lavis.models.blip2_models.blip2_t5_multimodal import Blip2T5_multimodal
+from lavis.models.blip2_models.blip2_t5_separate import Blip2T5_separate
+from lavis.models.blip2_models.blip2_smollm_multimodal import Blip2SmolLM_multimodal
 
-from lavis.models.pnp_vqa_models.pnp_vqa import PNPVQA
-from lavis.models.pnp_vqa_models.pnp_unifiedqav2_fid import PNPUnifiedQAv2FiD
-from lavis.models.img2prompt_models.img2prompt_vqa import Img2PromptVQA
+# from lavis.models.pnp_vqa_models.pnp_vqa import PNPVQA
+# from lavis.models.pnp_vqa_models.pnp_unifiedqav2_fid import PNPUnifiedQAv2FiD
+# from lavis.models.img2prompt_models.img2prompt_vqa import Img2PromptVQA
 from lavis.models.med import XBertLMHeadDecoder
 from lavis.models.vit import VisionTransformerEncoder
 from lavis.models.clip_models.model import CLIP
 
-from lavis.models.coca_models.coca_model import CoCa ### added
-from lavis.models.coca_models.videococa_model import VideoCoCa ### added
+# from lavis.models.coca_models.coca_model import CoCa ### added
+# from lavis.models.coca_models.videococa_model import VideoCoCa ### added
 
-from lavis.models.videochat.videochat import VideoChat ### added
-from lavis.models.videochat.videochat_pt import VideoChat_pt ### added
-from lavis.models.videochat.videochat_it import VideoChat_it ### added
+# from lavis.models.videochat.videochat import VideoChat ### added
+# from lavis.models.videochat.videochat_pt import VideoChat_pt ### added
+# from lavis.models.videochat.videochat_it import VideoChat_it ### added
 
-from lavis.models.video_llama.video_llama import VideoLLAMA ### added
-from lavis.models.panda_gpt.panda_gpt import PandaGPT ### added
+# from lavis.models.video_llama.video_llama import VideoLLAMA ### added
+# from lavis.models.panda_gpt.panda_gpt import PandaGPT ### added
 
-from lavis.models.simvlg_models.simvlg_t5 import SimvlgT5 ### added
+# from lavis.models.simvlg_models.simvlg_t5 import SimvlgT5 ### added
 
-from lavis.models.gpt_models.gpt_dialogue import GPTDialogue
+# from lavis.models.gpt_models.gpt_dialogue import GPTDialogue
 
 from lavis.processors.base_processor import BaseProcessor
 
@@ -91,24 +94,27 @@ __all__ = [
     "Blip2T5",
     "Blip2T5Instruct",
     "Blip2VicunaInstruct",
-    "PNPVQA",
-    "Img2PromptVQA",
-    "PNPUnifiedQAv2FiD",
-    "CLIP",
-    "CoCa", ### added
-    "VideoCoCa", ### added
-    "VisionTransformerEncoder",
-    "XBertLMHeadDecoder",
-    "GPTDialogue",
+    "Blip2T5_multimodal",
+    "Blip2T5_separate",
+    "Blip2SmolLM_multimodal"
+    # "PNPVQA",
+    # "Img2PromptVQA",
+    # "PNPUnifiedQAv2FiD",
+    # "CLIP",
+    # "CoCa", ### added
+    # "VideoCoCa", ### added
+    # "VisionTransformerEncoder",
+    # "XBertLMHeadDecoder",
+    # "GPTDialogue",
 
-    "VideoChat", ### added
-    "VideoChat_pt", ### added
-    "VideoChat_it", ### added
+    # "VideoChat", ### added
+    # "VideoChat_pt", ### added
+    # "VideoChat_it", ### added
 
-    "VideoLLAMA",
-    "PandaGPT",
+    # "VideoLLAMA",
+    # "PandaGPT",
 
-    "SimvlgT5"
+    # "SimvlgT5"
 ]
 
 

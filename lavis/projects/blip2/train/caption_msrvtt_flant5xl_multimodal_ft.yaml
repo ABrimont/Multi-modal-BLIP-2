@@ -1,13 +1,11 @@
 model:
-  arch: blip2_t5_multimodal
+  arch: blip2_t5_separate
   model_type: pretrain_flant5xl
-  load_pretrained: train
-  load_finetuned: False
+  load_pretrained: False
+  load_finetuned: True
 
-  # pretrained: "/home/abrimont/partage/mllm-video-captioner/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  pretrained: "/home/abrimont/partage/mllm-video-captioner/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/no_lora_PT_vis_weight_only/checkpoint_best.pth"
-  # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250718090/checkpoint_9000.pth"
+  pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
+  finetuned:  "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_separate/20251212120/checkpoint_best.pth"
   
   image_size: 224
   drop_path_rate: 0
@@ -18,9 +16,9 @@ model:
 
   # LoRA
   lora: True
-  lora_r: 16
-  lora_alpha: 32
-  lora_dropout: 0.05
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.15
 
   # Q-Former
   num_query_token: 32
@@ -31,48 +29,50 @@ model:
   # generation configs
   prompt: "a video of"
 
+  scst: True # https://arxiv.org/abs/1612.00563
+
 datasets:
   msrvtt_caption_audio: # name of the dataset builder
     vis_processor:
         train:
           name: "alpro_video_train"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
         eval:
           name: "alpro_video_eval"
-          n_frms: 8
+          n_frms: 16
           image_size: 224
     text_processor:
         train:
           name: "blip_caption"
         eval:
           name: "blip_caption"
-          
+
 run:
   runner: runner_iter
-  max_iters: 40000 
-  iters_per_inner_epoch: 2000
+  max_iters: 10000
+  iters_per_inner_epoch: 500
 
   task: captioning
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
-  init_lr: 3e-5
-  min_lr: 1e-5
+  init_lr: 5e-6
+  min_lr: 1e-6
   warmup_lr: 1e-8
-  warmup_steps: 0
+  warmup_steps: 500
   weight_decay: 0.05
-  max_epoch: 20
-  batch_size_train: 16
+  max_epoch: 10
+  batch_size_train: 1 ### RTX-A6000
   batch_size_eval: 16
   num_workers: 2
-  accum_grad_iters: 2
+  accum_grad_iters: 16
 
   max_len: 32
   min_len: 5
   num_beams: 5
 
   seed: 42
-  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio"
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio_scst"
 
   amp: True
   resume_ckpt_path: null
@@ -83,6 +83,6 @@ run:
   test_splits: ["test"]
 
   device: "cuda"
-  world_size: 1
+  world_size: 2
   dist_url: "env://"
   distributed: True

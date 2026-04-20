@@ -13,12 +13,12 @@ datasets:
       annotations:
         train:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json
-          storage: vatex/annotations/cap_train.json
+          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json
         val:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json
-          storage: vatex/annotations/cap_val.json
+          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json
         test:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json
-          storage: vatex/annotations/cap_test.json
+          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json
       videos:
-        storage: vatex/videos
+        storage: /home/abrimont/partage/VALOR/datasets/vatex/raw_videos

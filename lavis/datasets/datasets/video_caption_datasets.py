@@ -7,7 +7,7 @@
 
 import os
 from lavis.datasets.datasets.base_dataset import BaseDataset
-
+import torch
 from lavis.datasets.datasets.caption_datasets import CaptionDataset
 
 
@@ -25,7 +25,7 @@ class VideoCaptionDataset(CaptionDataset):
         ann = self.annotation[index]
 
         vname = ann["video"]
-        video_path = os.path.join(self.vis_root, vname)
+        video_path = os.path.join(self.vis_root, vname + ".mp4")
 
         video = self.vis_processor(video_path)
         caption = self.text_processor(ann["caption"])
@@ -53,9 +53,14 @@ class VideoCaptionEvalDataset(BaseDataset):
         ann = self.annotation[index]
 
         vname = ann["video"]
-        video_path = os.path.join(self.vis_root, vname)
-
-        video = self.vis_processor(video_path)
+        video_path = os.path.join(self.vis_root, vname + ".mp4")
+        try:
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                raise FileNotFoundError(f"Video file missing or empty: {video_path}")
+            video = self.vis_processor(video_path)
+        except Exception as e:
+            print(f"[WARN] Failed to load video {video_path}: {e}")
+            video = torch.zeros(3, 16, 224, 224)
 
         return {
             # "video": video,

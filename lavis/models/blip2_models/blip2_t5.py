@@ -383,10 +383,10 @@ class Blip2T5(Blip2Base):
                 top_p=top_p,
                 temperature=temperature,
                 num_beams=num_beams,
-                max_new_tokens=max_length,
-                min_length=min_length,
-                repetition_penalty=repetition_penalty,
-                length_penalty=length_penalty,
+                max_new_tokens=50,
+                min_length=5,
+                repetition_penalty=1.05,
+                length_penalty=0.75,
                 num_return_sequences=num_captions,
             )
             output_text = self.t5_tokenizer.batch_decode(

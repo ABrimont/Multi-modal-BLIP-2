@@ -4,8 +4,7 @@ model:
   load_pretrained: True
   load_finetuned: False
 
-  # pretrained: "/home/abrimont/partage/mllm-video-captioner/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  pretrained: "/home/abrimont/partage/mllm-video-captioner/blip2_pretrained_flant5xl.pth"
+  pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
   # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250718090/checkpoint_9000.pth"
   
   image_size: 224
@@ -48,9 +47,9 @@ datasets:
           name: "blip_caption"
           
 run:
-  runner: runner_iter
-  max_iters: 30000
-  iters_per_inner_epoch: 2000
+  # runner: runner_iter
+  # max_iters: 30000
+  # iters_per_inner_epoch: 2000
 
   task: captioning
   # optimizer

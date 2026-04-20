@@ -86,6 +86,26 @@ def main():
         cfg=cfg, job_id=job_id, task=task, model=model, datasets=datasets
     )
     runner.evaluate(skip_reload=True)
+    
+    # collect_and_save_attentions_QF(model)
+
+
+# --- À la fin de evaluate.py ---
+
+def collect_and_save_attentions_QF(model, output_path="attentions_moyennes.pt"):
+    final_data = {}
+    
+    for i, layer in enumerate(model.bert.encoder.layer):
+        if hasattr(layer, 'attention_store') and len(layer.attention_store) > 0:
+            # On combine tous les batchs [Total_Samples, 48, 48]
+            layer_attn = torch.cat(layer.attention_store, dim=0)
+            # On calcule la moyenne pour cette couche
+            final_data[f"layer_{i}"] = layer_attn.mean(dim=0)
+            
+    # Sauvegarde sur le disque
+    if len(final_data) > 0:
+        torch.save(final_data, output_path)
+        print(f"✅ Attentions sauvegardées dans {output_path}")
 
 
 if __name__ == "__main__":

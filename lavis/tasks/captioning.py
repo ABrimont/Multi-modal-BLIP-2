@@ -106,7 +106,7 @@ class CaptionTask(BaseTask):
 # pip install git+https://github.com/jmhessel/pycocoevalcap.git
 # Based on https://github.com/jmhessel/clipscore
 from .pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
-from .pycocoevalcap.spice.spice import Spice
+# from .pycocoevalcap.spice.spice import Spice
 from .pycocoevalcap.meteor.meteor import Meteor
 from .pycocoevalcap.bleu.bleu import Bleu
 from .pycocoevalcap.cider.cider import Cider
@@ -186,7 +186,17 @@ def caption_eval(coco_gt_root, results_file, split):
         }
         msrvtt_gt_root = coco_gt_root.replace("coco_gt", "msrvtt_gt")
         annotation_file = os.path.join(msrvtt_gt_root, filenames[split])
+        annotation_file = "/home/abrimont/partage/VALOR/datasets/msrvtt/caption_annotation_img.json"
 
+    elif "AudioCaps" in results_file:
+        filenames = {
+            "val": "msrvtt_val_gt.json",
+            "test": "msrvtt_test_gt.json",
+        }
+        msrvtt_gt_root = coco_gt_root.replace("coco_gt", "msrvtt_gt")
+        annotation_file = os.path.join(msrvtt_gt_root, filenames[split])
+        annotation_file = "/home/abrimont/partage/AudioCaps/anno.json"
+        
     elif "msvd" in results_file:
         filenames = {
             "val": "msvd_val_gt.json",
@@ -202,6 +212,7 @@ def caption_eval(coco_gt_root, results_file, split):
         }
         msrvtt_gt_root = coco_gt_root.replace("coco_gt", "vatex_gt")
         annotation_file = os.path.join(msrvtt_gt_root, filenames[split])
+        annotation_file = "/home/abrimont/partage/VALOR/datasets/vatex/caption_anno_en.json"
 
     else:
         print(" ***** Output directory of captioning at LAVIS/lavis/outputs/ has to be name using one of ['Caption_coco', 'Caption_msrvtt', 'Caption_msvd', 'Caption_vatex']. ***** ")
@@ -220,8 +231,8 @@ def caption_eval(coco_gt_root, results_file, split):
         image_ids.append(res["image_id"])
     
     references = {}
-    for ann in annotations["annotations"]:   # "coco_gt/coco_karpathy_test_gt.json"
-        if ann["image_id"] not in references:   # TODO: more sufficient
+    for ann in annotations["annotations"]: 
+        if ann["image_id"] not in references:   
             references[ann["image_id"]] = []
         references[ann["image_id"]].append(ann["caption"])
 

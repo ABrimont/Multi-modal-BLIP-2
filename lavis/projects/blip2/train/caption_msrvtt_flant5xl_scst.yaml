@@ -4,7 +4,7 @@ model:
   load_pretrained: True
   load_finetuned: False
 
-  pretrained: "/home/anonymous/new_ssd2/VideoBenchmark2/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt/20231219222/checkpoint_best.pth"
+  pretrained: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20251004112/checkpoint_best.pth"
 
   image_size: 224
   drop_path_rate: 0
@@ -47,14 +47,14 @@ datasets:
           name: "blip_caption"
 
 run:
-  runner: runner_iter
-  max_iters: 20000 
-  iters_per_inner_epoch: 1000
+  # runner: runner_iter
+  # max_iters: 20000 
+  # iters_per_inner_epoch: 1000
 
   task: captioning
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
-  init_lr: 1e-5
+  init_lr: 5e-6
   min_lr: 1e-6
   warmup_lr: 1e-8
   warmup_steps: 1000
@@ -62,8 +62,8 @@ run:
   max_epoch: 10
   batch_size_train: 2 ### RTX-A6000
   batch_size_eval: 2
-  num_workers: 4
-  accum_grad_iters: 1
+  num_workers: 2
+  accum_grad_iters: 4
 
   max_len: 32
   min_len: 5
@@ -81,6 +81,6 @@ run:
   test_splits: ["test"]
 
   device: "cuda"
-  world_size: 1
+  world_size: 2
   dist_url: "env://"
   distributed: True

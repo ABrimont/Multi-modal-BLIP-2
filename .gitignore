@@ -1,41 +1,42 @@
-# --- Python ---
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-*.egg-info/
-
-# --- Environnements virtuels ---
+# --- Environnements virtuels (TRÈS IMPORTANT) ---
 venv/
-.env/
-.venv/
+venv10/
+newvenv/
+miniconda.sh
 
-# --- Notebooks ---
-.ipynb_checkpoints/
-
-# --- Logs & sorties ---
-*.log
-*.out
-*.err
-
-# --- Checkpoints / poids modèles ---
+# --- Poids des modèles et Data (Fichiers .pt et .json lourds) ---
 *.pt
-*.pth
-*.ckpt
+*.json
+!pyproject.toml
+attentions_data/
 
-# --- Données volumineuses ---
-data/
-datasets/
-*.zip
-*.tar
-*.gz
+# --- Logs et fichiers de sortie ---
+*.log
+*.txt
+!requirements.txt
+!requirements-modern.txt
 
-# --- Config IDE / OS ---
-.vscode/
+# --- Dossiers de build et metadata ---
+build/
+*.egg-info/
+__pycache__/
+
+# --- Dossiers d'outils externes (à réinstaller via script si besoin) ---
+stanford-corenlp-*/
+decord/
+
+# --- Images de test/résultats ---
+*.png
+
+# --- Fichiers de backup ou copies ---
+lavis copy_2/
+lavis_true/
+
 .idea/
-*.swp
-.DS_Store
+.cache/
+unilm/
 
-# --- Sous-dépôts git ---
-*/.git/
+lavis/output/
+
+lavis/datasets/msrvtt/
+lavis/datasets/vatex/

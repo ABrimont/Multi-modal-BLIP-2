@@ -5,7 +5,7 @@ model:
   load_finetuned: True
 
   # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250716115/checkpoint_best.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/no_lora_PT_weights_aud_vis/checkpoint_best.pth"
+  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/16_aud/checkpoint_best.pth"
 
   image_size: 224
   drop_path_rate: 0
@@ -17,7 +17,7 @@ model:
   lora: True
   lora_r: 8
   lora_alpha: 16
-  lora_dropout: 0.05
+  lora_dropout: 0.15
 
   # Q-Former
   num_query_token: 32
@@ -49,22 +49,22 @@ datasets:
 
 run:
   runner: runner_iter
-  max_iters: 32500
-  iters_per_inner_epoch: 3250
+  max_iters: 10000
+  iters_per_inner_epoch: 500
 
   task: captioning
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
-  init_lr: 1e-5
+  init_lr: 5e-6
   min_lr: 1e-6
   warmup_lr: 1e-8
-  warmup_steps: 3250
+  warmup_steps: 500
   weight_decay: 0.05
   max_epoch: 10
   batch_size_train: 1 ### RTX-A6000
   batch_size_eval: 16
   num_workers: 2
-  accum_grad_iters: 8
+  accum_grad_iters: 16
 
   max_len: 32
   min_len: 5

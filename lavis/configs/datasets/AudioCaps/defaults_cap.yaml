@@ -1,0 +1,25 @@
+
+ # Copyright (c) 2022, anonymous.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  AudioCaps_caption: # name of the dataset builder
+    data_dir: $/home/abrimont/partage/mllm-video-captioner/lavis/datasets/
+    data_type: videos # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json
+          storage: /home/abrimont/partage/AudioCaps/train.json
+        val:
+          url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json
+          storage: /home/abrimont/partage/AudioCaps/val_unique.json
+        test:
+          url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json
+          storage: /home/abrimont/partage/AudioCaps/test_unique.json
+      videos:
+        storage: /home/abrimont/partage/AudioCaps/audiocaps_raw_audio

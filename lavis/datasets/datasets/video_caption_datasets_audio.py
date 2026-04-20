@@ -27,7 +27,7 @@ class VideoCaptionDatasetAudio(CaptionDataset):
         self.vis_root= "/home/abrimont/partage/VALOR/datasets/msrvtt/raw_videos"
 
     @staticmethod
-    def pad_or_truncate_audio(audio, valid, target_length=480000):
+    def pad_or_truncate_audio(audio, valid, target_length=320250):
         audio = audio[:, :target_length]
         pad_len = target_length - audio.shape[1]
         padded = torch.nn.functional.pad(audio, (0, pad_len))
@@ -37,10 +37,10 @@ class VideoCaptionDatasetAudio(CaptionDataset):
         ], dim=1).bool()
 
         if valid == 0:
-            mask_LLM = torch.zeros(1, 1496)
+            mask_LLM = torch.zeros(1, 1000)
         else:
-            n_valid = min(1496, audio.shape[1] // 320)
-            mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1496 - n_valid)], dim=1)
+            n_valid = min(1000, audio.shape[1] // 320)
+            mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1000 - n_valid)], dim=1)
         return padded, mask_BEATs, mask_LLM
 
     def __getitem__(self, index):
@@ -72,7 +72,7 @@ class VideoCaptionDatasetAudio(CaptionDataset):
             valid_audio = 1
         except Exception as e:
             # print(f"[WARN] Failed to load audio {audio_file}: {e}")
-            waveform = torch.zeros(1, 480_000)
+            waveform = torch.zeros(1, 320250)
             valid_audio = 0
 
         audio, mask_BEATs, mask_LLM = self.pad_or_truncate_audio(waveform, valid_audio)
@@ -102,17 +102,21 @@ class VideoCaptionEvalDatasetAudio(BaseDataset):
         self.audio_root = "/home/abrimont/partage/VALOR/datasets/msrvtt/audio_22050hz"
 
     @staticmethod
-    def pad_or_truncate_audio(audio, valid, target_length=480000):
-        audio = audio[:, :target_length]
-        pad_len = target_length - audio.shape[1]
-        padded = torch.nn.functional.pad(audio, (0, pad_len))
-        mask_BEATs = torch.cat([torch.zeros(1, audio.shape[1]), torch.ones(1, pad_len)], dim=1)
-        if valid == 0:
-            mask_LLM = torch.zeros(1, 1496)
-        else:
-            n_valid = min(1496, audio.shape[1] // 320)
-            mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1496 - n_valid)], dim=1)
-        return padded, mask_BEATs, mask_LLM
+    def pad_or_truncate_audio(audio, valid, target_length=320250):
+            audio = audio[:, :target_length]
+            pad_len = target_length - audio.shape[1]
+            padded = torch.nn.functional.pad(audio, (0, pad_len))
+            mask_BEATs = torch.cat([
+                torch.zeros(1, audio.shape[1]),
+                torch.ones(1, pad_len)
+            ], dim=1).bool()
+
+            if valid == 0:
+                mask_LLM = torch.zeros(1, 1000)
+            else:
+                n_valid = min(1000, audio.shape[1] // 320)
+                mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1000 - n_valid)], dim=1)
+            return padded, mask_BEATs, mask_LLM
 
     def __getitem__(self, index):
         ann = self.annotation[index]
@@ -148,7 +152,7 @@ class VideoCaptionEvalDatasetAudio(BaseDataset):
             valid_audio = 1
         except Exception as e:
             # print(f"[WARN] Failed to load audio {audio_file}: {e}")
-            waveform = torch.zeros(1, 480_000)
+            waveform = torch.zeros(1, 320250)
             valid_audio = 0
 
         audio, mask_BEATs, mask_LLM = self.pad_or_truncate_audio(waveform, valid_audio)

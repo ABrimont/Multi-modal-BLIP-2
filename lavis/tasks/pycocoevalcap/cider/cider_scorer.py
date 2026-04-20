@@ -190,3 +190,15 @@ class CiderScorer(object):
         # debug
         # print score
         return np.mean(np.array(score)), np.array(score)
+
+
+    def compute_score_bis(self, option=None, verbose=0):
+        # compute idf
+        # self.compute_doc_freq()
+        # assert to check document frequency
+        assert(len(self.ctest) >= max(self.document_frequency.values()))
+        # compute cider score
+        score = self.compute_cider()
+        # debug
+        # print score
+        return np.mean(np.array(score)), np.array(score)

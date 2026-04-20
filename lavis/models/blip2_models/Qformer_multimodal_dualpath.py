@@ -44,6 +44,7 @@ from transformers.modeling_utils import (
 )
 from transformers.utils import logging
 from transformers.models.bert.configuration_bert import BertConfig
+import copy
 
 logger = logging.get_logger(__name__)
 
@@ -379,28 +380,54 @@ class BertLayer(nn.Module):
     def __init__(self, config, layer_num):
         super().__init__()
         self.config = config
+        self.config_aud = copy.deepcopy(config)
+        self.config_aud.encoder_width = 768   # spécifique audio
         self.chunk_size_feed_forward = config.chunk_size_feed_forward
         self.seq_len_dim = 1
-        self.attention = BertAttention(config)
         self.layer_num = layer_num
+
+        # --- self-attention partagé ---
+        self.attention = BertAttention(config)
+
+        # --- cross-attn (vision/audio) si activé ---
         if (
-            self.config.add_cross_attention
-            and layer_num % self.config.cross_attention_freq == 0
+            config.add_cross_attention
+            and layer_num % config.cross_attention_freq == 0
         ):
             self.crossattention_vis = BertAttention(
-                config, is_cross_attention=self.config.add_cross_attention
+                config, is_cross_attention=True
             )
             self.crossattention_aud = BertAttention(
-                config, is_cross_attention=self.config.add_cross_attention
+                self.config_aud, is_cross_attention=True
             )
+            self.has_cross_attention_aud = True
+
+            # self.has_cross_attention_aud = False
             self.has_cross_attention = True
         else:
             self.has_cross_attention = False
-        self.intermediate = BertIntermediate(config)
-        self.output = BertOutput(config)
+            self.has_cross_attention_aud = False
+            # self.crossattention_aud = BertAttention(
+            #     self.config_aud, is_cross_attention=True
+            # )
+            # self.has_cross_attention_aud = True
 
-        self.intermediate_query = BertIntermediate(config)
-        self.output_query = BertOutput(config)
+        # --- Feed-Forward séparés pour les queries ---
+        self.intermediate_query_vis = BertIntermediate(config)
+        self.output_query_vis = BertOutput(config)
+
+        self.intermediate_query_aud = BertIntermediate(self.config_aud)
+        self.output_query_aud = BertOutput(self.config_aud)
+
+    # --- FFN Vision ---
+    def feed_forward_chunk_vis(self, attention_output):
+        intermediate_output = self.intermediate_query_vis(attention_output)
+        return self.output_query_vis(intermediate_output, attention_output)
+
+    # --- FFN Audio ---
+    def feed_forward_chunk_aud(self, attention_output):
+        intermediate_output = self.intermediate_query_aud(attention_output)
+        return self.output_query_aud(intermediate_output, attention_output)
 
     def forward(
         self,
@@ -415,126 +442,94 @@ class BertLayer(nn.Module):
         encoder_attention_mask_aud=None,
         past_key_value=None,
         output_attentions=False,
-        query_length=0, ####
+        query_length=0,
     ):
-        batch, num_queries, dim_vis = hidden_states_vis.shape
-        num_queries_vis = num_queries
-        num_queries_aud = num_queries
-        
-        # decoder uni-directional self-attention cached key/values tuple is at positions 1,2
+        batch, num_queries_vis, dim_vis = hidden_states_vis.shape
+        _, num_queries_aud, dim_aud = hidden_states_aud.shape
+
+        # --- self-attn combiné vision + audio ---
         self_attn_past_key_value = (
             past_key_value[:2] if past_key_value is not None else None
         )
         self_attention_outputs = self.attention(
-            torch.cat([hidden_states_vis,hidden_states_aud],dim=1),
+            torch.cat([hidden_states_vis, hidden_states_aud], dim=1),
             None,
             head_mask,
             output_attentions=output_attentions,
-            past_key_value=self_attn_past_key_value,
+            # past_key_value=self_attn_past_key_value,
         )
         attention_output = self_attention_outputs[0]
         outputs = self_attention_outputs[1:-1]
-
         present_key_value = self_attention_outputs[-1]
 
-        if num_queries_vis > 0:
-            query_attention_output_vis = attention_output[:, :num_queries_vis, :]
-
-            if self.has_cross_attention:
-                assert (
-                    encoder_hidden_states_vis is not None
-                ), "encoder_hidden_states must be given for cross-attention layers"
-
-                cross_attention_outputs_vis = self.crossattention_vis(
-                    query_attention_output_vis,
-                    attention_mask_vis,
-                    head_mask,
-                    encoder_hidden_states_vis,
-                    encoder_attention_mask_vis,
-                    output_attentions=output_attentions,
-                )
-                query_attention_output_vis = cross_attention_outputs_vis[0]
-                outputs_vis = (
-                    outputs + cross_attention_outputs_vis[1:-1]
-                )  # add cross attentions if we output attention weights
-
-            layer_output_vis = apply_chunking_to_forward(
-                self.feed_forward_chunk_query,
-                self.chunk_size_feed_forward,
-                self.seq_len_dim,
+        if self_attention_outputs:
+            raw_probs = self_attention_outputs[1]
+            attention_probs = raw_probs[0] if isinstance(raw_probs, tuple) else raw_probs
+            
+            if attention_probs.min() < 0 or attention_probs.max() > 1:
+                attention_probs = torch.softmax(attention_probs, dim=-1)
+            
+            avg_attention = attention_probs.mean(dim=1)
+            # print(avg_attention)
+            heatmap_matrix = avg_attention[:, -48:, -48:]
+            
+            if not self.training:
+                if not hasattr(self, 'attention_store'):
+                    self.attention_store = []
+                
+                self.attention_store.append(heatmap_matrix.detach().clone().cpu())
+                    
+        # --- Branche vision ---
+        query_attention_output_vis = attention_output[:, :num_queries_vis, :]
+        if self.has_cross_attention:
+            assert encoder_hidden_states_vis is not None
+            cross_attention_outputs_vis = self.crossattention_vis(
                 query_attention_output_vis,
+                attention_mask_vis,
+                head_mask,
+                encoder_hidden_states_vis,
+                encoder_attention_mask_vis,
+                output_attentions=output_attentions,
             )
-            if attention_output.shape[1] > num_queries_vis + num_queries_aud:
-                layer_output_text_vis = apply_chunking_to_forward(
-                    self.feed_forward_chunk,
-                    self.chunk_size_feed_forward,
-                    self.seq_len_dim,
-                    attention_output[:, num_queries_vis + num_queries_aud:, :],
-                )
-                layer_output_vis = torch.cat([layer_output_vis, layer_output_text_vis], dim=1)
-        else:
-            layer_output_vis = apply_chunking_to_forward(
-                self.feed_forward_chunk,
-                self.chunk_size_feed_forward,
-                self.seq_len_dim,
-                attention_output,
-            )            
+            query_attention_output_vis = cross_attention_outputs_vis[0]
+            outputs = outputs + cross_attention_outputs_vis[1:-1]
+        #     print('vis')
+        # else:
+        #     print('no_vis')
+        layer_output_vis = apply_chunking_to_forward(
+            self.feed_forward_chunk_vis,
+            self.chunk_size_feed_forward,
+            self.seq_len_dim,
+            query_attention_output_vis,
+        )
 
-        if num_queries_aud > 0:
-            query_attention_output_aud = attention_output[:, num_queries_vis:, :]
-
-            if self.has_cross_attention:
-                assert (
-                    encoder_hidden_states_aud is not None
-                ), "encoder_hidden_states must be given for cross-attention layers"
-                cross_attention_outputs_aud = self.crossattention_aud(
-                    query_attention_output_aud,
-                    attention_mask_aud,
-                    head_mask,
-                    encoder_hidden_states_aud,
-                    encoder_attention_mask_aud,
-                    output_attentions=output_attentions,
-                )
-                query_attention_output_aud = cross_attention_outputs_aud[0]
-                outputs_aud = (
-                    outputs + cross_attention_outputs_aud[1:-1]
-                )  # add cross attentions if we output attention weights
-
-            layer_output_aud = apply_chunking_to_forward(
-                self.feed_forward_chunk_query,
-                self.chunk_size_feed_forward,
-                self.seq_len_dim,
+        # --- Branche audio ---
+        query_attention_output_aud = attention_output[:, num_queries_vis:num_queries_vis+num_queries_aud, :]
+        if self.has_cross_attention_aud:
+            assert encoder_hidden_states_aud is not None
+            cross_attention_outputs_aud = self.crossattention_aud(
                 query_attention_output_aud,
+                attention_mask_aud,
+                head_mask,
+                encoder_hidden_states_aud,
+                encoder_attention_mask_aud,
+                output_attentions=output_attentions,
             )
-            if attention_output.shape[1] > num_queries_aud + num_queries_aud:
-                layer_output_text_aud = apply_chunking_to_forward(
-                    self.feed_forward_chunk,
-                    self.chunk_size_feed_forward,
-                    self.seq_len_dim,
-                    attention_output[:, num_queries_aud + num_queries_aud:, :],
-                )
-                layer_output_aud = torch.cat([layer_output_aud, layer_output_text_aud], dim=1)
-        else:
-            layer_output_aud = apply_chunking_to_forward(
-                self.feed_forward_chunk,
-                self.chunk_size_feed_forward,
-                self.seq_len_dim,
-                attention_output,
-            )      
+            query_attention_output_aud = cross_attention_outputs_aud[0]
+            outputs = outputs + cross_attention_outputs_aud[1:-1]
+        #     print('aud')
+        # else:
+        #     print('no_aud')
+
+        layer_output_aud = apply_chunking_to_forward(
+            self.feed_forward_chunk_aud,
+            self.chunk_size_feed_forward,
+            self.seq_len_dim,
+            query_attention_output_aud,
+        )
+        # if layer_output_aud.size(0) == 1:
+        #     layer_output_aud = layer_output_aud.expand(layer_output_vis.shape[0], -1, -1) 
         return layer_output_vis, layer_output_aud
-    
-    
-
-    def feed_forward_chunk(self, attention_output):
-        intermediate_output = self.intermediate(attention_output)
-        layer_output = self.output(intermediate_output, attention_output)
-        return layer_output
-
-    def feed_forward_chunk_query(self, attention_output):
-        intermediate_output = self.intermediate_query(attention_output)
-        layer_output = self.output_query(intermediate_output, attention_output)
-        return layer_output
-
 
 class BertEncoder(nn.Module):
     def __init__(self, config):

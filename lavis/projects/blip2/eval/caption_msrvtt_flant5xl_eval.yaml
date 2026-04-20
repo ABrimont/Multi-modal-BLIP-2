@@ -5,7 +5,7 @@ model:
   load_finetuned: False
 
   # pretrained: "/home/anonymous/new_ssd/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  pretrained: "/home/anonymous/new_ssd2/VideoBenchmark2/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt/20231220224/checkpoint_best.pth"
+  pretrained: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio_scst/20251022102/checkpoint_12000.pth"
 
   image_size: 224
   drop_path_rate: 0
@@ -15,8 +15,8 @@ model:
 
   # LoRA
   lora: True
-  lora_r: 8
-  lora_alpha: 16
+  lora_r: 4
+  lora_alpha: 8
   lora_dropout: 0.05
 
   # Q-Former
@@ -33,11 +33,11 @@ datasets:
     vis_processor:
         train:
           name: "alpro_video_train"
-          n_frms: 16
+          n_frms: 8
           image_size: 224
         eval:
           name: "alpro_video_eval"
-          n_frms: 16
+          n_frms: 8
           image_size: 224
     text_processor:
         train:

@@ -5,7 +5,6 @@ asttokens==2.2.1
 attrs==23.1.0
 av==10.0.0
 backcall==0.2.0
-backports.zoneinfo==0.2.1
 blinker==1.6.2
 blis==0.7.9
 braceexpand==0.1.7
@@ -66,17 +65,6 @@ networkx==3.1
 ninja==1.11.1
 nodeenv==1.8.0
 numpy==1.24.3
-nvidia-cublas-cu11==11.10.3.66
-nvidia-cuda-cupti-cu11==11.7.101
-nvidia-cuda-nvrtc-cu11==11.7.99
-nvidia-cuda-runtime-cu11==11.7.99
-nvidia-cudnn-cu11==8.5.0.96
-nvidia-cufft-cu11==10.9.0.58
-nvidia-curand-cu11==10.2.10.91
-nvidia-cusolver-cu11==11.4.0.1
-nvidia-cusparse-cu11==11.7.4.91
-nvidia-nccl-cu11==2.14.3
-nvidia-nvtx-cu11==11.7.91
 omegaconf==2.3.0
 opencv-python-headless==4.5.5.64
 opendatasets==0.1.22
@@ -103,7 +91,6 @@ pure-eval==0.2.2
 py-cpuinfo==9.0.0
 pyarrow==12.0.1
 pycocoevalcap==1.2
-pycocotools==2.0.6
 pydantic==1.10.9
 pydeck==0.8.1b0
 Pygments==2.15.1
@@ -146,16 +133,17 @@ tokenizers==0.13.3
 toml==0.10.2
 tomli==2.0.1
 toolz==0.12.0
-torch==1.13.1
-torchaudio==0.13.1
-torchvision==0.14.1
+# 🔥 Versions modernes Torch (CUDA 12.1)
+torch==2.3.1+cu121
+torchaudio==2.3.1+cu121
+torchvision==0.18.1+cu121
+triton==2.3.1
 tornado==6.3.2
 tqdm==4.64.1
 traitlets==5.9.0
 transformers==4.30.0
-triton==2.0.0
 typer==0.7.0
-typing_extensions==4.6.3
+typing_extensions==4.12.2
 tzdata==2023.3
 tzlocal==4.3.1
 urllib3==2.0.3
@@ -167,4 +155,4 @@ wcwidth==0.2.6
 webdataset==0.2.48
 yacs==0.1.8
 zipp==3.15.0
-wandb
+wandb==0.17.9
