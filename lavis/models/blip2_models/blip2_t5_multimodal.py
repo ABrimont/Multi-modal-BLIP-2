@@ -24,7 +24,7 @@ from lavis.tasks.pycocoevalcap.cider.cider import Cider
 from peft import LoraConfig, TaskType, get_peft_model
 
 from .unilm.beats.BEATs import BEATs, BEATsConfig
-from .blip2_qf_dual_path import init_Qformer_dual
+from .blip2_multimodal_QFormer import init_Qformer_dual
 
 def tokenize(refs, cands, no_op=False):
     # no_op is a debug option to see how significantly not using the PTB tokenizer
