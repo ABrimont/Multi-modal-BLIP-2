@@ -173,7 +173,7 @@ class Blip2T5_multimodal(Blip2Base):
             audio = samples["audio"].float()
             audio_mask = samples["audio_mask"]
             audio_mask_LLM = samples["audio_mask_LLM"]            
-            # print(audio_mask.shape,audio.shape,audio_mask_LLM.shape)
+         
             
             with self.maybe_autocast(dtype=torch.float32): 
                 audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
@@ -205,7 +205,6 @@ class Blip2T5_multimodal(Blip2Base):
             inputs_t5_vis = self.t5_proj(query_output.last_hidden_state[:,:32,:])
             inputs_t5_aud = self.t5_proj_aud(query_output.last_hidden_state[:,32:,:])
             inputs_t5 = torch.cat([inputs_t5_aud,inputs_t5_vis],dim=1)
-            # print(inputs_t5.shape)
 
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
@@ -249,14 +248,14 @@ class Blip2T5_multimodal(Blip2Base):
                     labels=targets,
                 )
                 loss = outputs.loss
-                # print(loss)
+             
                 return {"loss": loss}
             
         else: # scst training: https://arxiv.org/abs/1612.00563
             audio = samples["audio"].float()
             audio_mask = samples["audio_mask"]
             audio_mask_LLM = samples["audio_mask_LLM"]
-            # print("audio_mask_LLM", audio_mask_LLM.shape, audio_mask_LLM.sum())
+         
 
             with self.maybe_autocast(dtype=torch.float32): 
                 audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
@@ -290,11 +289,11 @@ class Blip2T5_multimodal(Blip2Base):
             inputs_t5 = torch.cat([inputs_t5_aud,inputs_t5_vis],dim=1)
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
-            ### new code starts
+         
             text = samples["text_input"]
             samples["text_input"] = [self.prompt] * B
             samples["text_output"] = text
-            ### new code ends
+         
 
             with self.maybe_autocast(dtype=torch.bfloat16):
                 input_tokens = self.t5_tokenizer(
@@ -349,116 +348,20 @@ class Blip2T5_multimodal(Blip2Base):
                         caps_gt_all.append(gt)  
                 caps_gt = caps_gt_all
 
-                # print(caps_gt,caps_gen)
+             
                 caps_gen, caps_gt = tokenize(caps_gt, caps_gen)
 
                 reward = Cider().compute_score(caps_gt, caps_gen)[1].astype(np.float32)
                 reward = torch.from_numpy(reward).to(image.device).view(self.beam_size, len(samples["text_output"]))
                 reward = reward.mean(dim=1)
                 reward_baseline = torch.mean(reward, -1, keepdim=True)
-                # print(reward)
+             
                 loss = - (sequences_scores) * (reward-reward_baseline)
                 loss = loss.mean()
 
                 return {"loss": loss}
             
-            
-        # else:  # SCST
-        #     audio = samples["audio"].float()
-        #     audio_mask = samples["audio_mask"]
-        #     audio_mask_LLM = samples["audio_mask_LLM"]
-
-        #     with self.maybe_autocast(dtype=torch.float32): 
-        #         audio_emb = self.audio_encoder.extract_features(
-        #             audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool()
-        #         )[0]
-        #     audio_features = self.ln_audio(audio_emb)
-
-        #     image = samples["video"]
-        #     B, C, T, H, W = image.shape
-        #     image = image.permute(0,2,1,3,4).contiguous().reshape(B*T,C,H,W)
-
-        #     with self.maybe_autocast():
-        #         image_embeds = self.ln_vision(self.visual_encoder(image))
-        #         image_embeds = image_embeds.reshape(B, -1, image_embeds.shape[-1])
-        #         image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(image.device)
-
-        #     query_output = self.Qformer.bert(
-        #         query_embeds=self.query_tokens,
-        #         encoder_hidden_states_vis=image_embeds,
-        #         encoder_attention_mask_vis=image_atts,
-        #         encoder_hidden_states_aud=audio_features,
-        #         encoder_attention_mask_aud=audio_mask_LLM,
-        #         return_dict=True,
-        #     )
-
-        #     inputs_t5_vis = self.t5_proj(query_output.last_hidden_state[:,:32,:])
-        #     inputs_t5_aud = self.t5_proj_aud(query_output.last_hidden_state[:,32:,:])
-        #     inputs_t5 = torch.cat([inputs_t5_aud, inputs_t5_vis], dim=1)
-        #     atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
-
-        #     text = samples["text_input"]
-        #     samples["text_input"] = [self.prompt] * B
-        #     samples["text_output"] = text
-
-        #     input_tokens = self.t5_tokenizer(
-        #         samples["text_input"],
-        #         padding="longest",
-        #         truncation=True,
-        #         max_length=self.max_txt_len,
-        #         return_tensors="pt",
-        #     ).to(image.device)
-
-        #     encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
-        #     inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
-        #     inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
-
-        #     # --- greedy baseline ---
-        #     with torch.no_grad():
-        #         greedy_out = self.t5_model.generate(
-        #             inputs_embeds=inputs_embeds,
-        #             attention_mask=encoder_atts,
-        #             do_sample=False,
-        #             max_length=32,
-        #         )
-
-        #     # --- sampled output ---
-        #     sampled_out = self.t5_model.generate(
-        #         inputs_embeds=inputs_embeds,
-        #         attention_mask=encoder_atts,
-        #         do_sample=True,
-        #         top_p=0.9,
-        #         top_k=5,
-        #         temperature=1.0,
-        #         max_length=32,
-        #         return_dict_in_generate=True,
-        #         output_scores=True,
-        #     )
-
-        #     # compute log-probs
-        #     transition_scores = self.t5_model.compute_transition_scores(
-        #         sampled_out.sequences, sampled_out.scores, normalize_logits=False
-        #     )
-        #     output_length = torch.sum(transition_scores < 0, dim=1)
-        #     log_probs = transition_scores.sum(dim=1) / output_length
-
-        #     # decode
-        #     caps_sample = self.t5_tokenizer.batch_decode(sampled_out.sequences, skip_special_tokens=True)
-        #     caps_greedy = self.t5_tokenizer.batch_decode(greedy_out, skip_special_tokens=True)
-        #     caps_gt = samples["text_output"]
-
-        #     # compute rewards
-        #     cider = Cider()
-        #     reward_sample = cider.compute_score(caps_gt, caps_sample)[1].astype(np.float32)
-        #     reward_greedy = cider.compute_score(caps_gt, caps_greedy)[1].astype(np.float32)
-        #     advantage = torch.tensor(reward_sample - reward_greedy, device=image.device)
-
-        #     # final SCST loss
-        #     loss = - (advantage * log_probs).mean()
-
-        #     return {"loss": loss}
-
-
+           
 
 
     @torch.no_grad()
@@ -492,7 +395,6 @@ class Blip2T5_multimodal(Blip2Base):
         audio = samples["audio"].float()
         audio_mask = samples["audio_mask"]
         audio_mask_LLM = samples["audio_mask_LLM"]
-        # print("audio_mask_LLM", audio_mask_LLM.shape, audio_mask_LLM.sum())
 
         with self.maybe_autocast(dtype=torch.float32): 
             audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
@@ -561,16 +463,7 @@ class Blip2T5_multimodal(Blip2Base):
                 output_attentions=True,
                 return_dict_in_generate=True,
             )
-        
-        
-        # if outputs.encoder_attentions is not None:
-        #     print(f"Nombre de couches d'attention : {len(outputs.encoder_attentions)}")
-            # La dernière couche : outputs.encoder_attentions[-1]
-
-        # Attention : pour le décodage, il faut maintenant cibler .sequences
-        output_text = self.t5_tokenizer.batch_decode(
-            outputs.sequences, skip_special_tokens=True
-        )
+       
 
         return output_text
 
