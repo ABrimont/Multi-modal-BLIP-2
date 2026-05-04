@@ -91,7 +91,7 @@ class Blip2T5_separate(Blip2Base):
         super().__init__()
         freeze_audio = True
 
-        checkpoint = torch.load('/home/abrimont/partage/mllm-video-captioner/BEATs_iter3_plus_AS2M(2).pt')
+        # checkpoint = torch.load(BEATS weights path)
         cfg = BEATsConfig(checkpoint['cfg'])
         self.audio_encoder = BEATs(cfg)
         self.audio_encoder.load_state_dict(checkpoint['model'])
