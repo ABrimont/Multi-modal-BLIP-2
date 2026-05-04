@@ -386,10 +386,10 @@ class BertLayer(nn.Module):
         self.seq_len_dim = 1
         self.layer_num = layer_num
 
-        # --- self-attention partagé ---
+        # --- Shared self-attention ---
         self.attention = BertAttention(config)
 
-        # --- cross-attn (vision/audio) si activé ---
+        # --- Separate cross-attention(vision/audio) ---
         if (
             config.add_cross_attention
             and layer_num % config.cross_attention_freq == 0
@@ -400,19 +400,15 @@ class BertLayer(nn.Module):
             self.crossattention_aud = BertAttention(
                 self.config_aud, is_cross_attention=True
             )
+            
             self.has_cross_attention_aud = True
-
-            # self.has_cross_attention_aud = False
             self.has_cross_attention = True
+            
         else:
             self.has_cross_attention = False
             self.has_cross_attention_aud = False
-            # self.crossattention_aud = BertAttention(
-            #     self.config_aud, is_cross_attention=True
-            # )
-            # self.has_cross_attention_aud = True
 
-        # --- Feed-Forward séparés pour les queries ---
+        # --- Separate Feed-Forward ---
         self.intermediate_query_vis = BertIntermediate(config)
         self.output_query_vis = BertOutput(config)
 
@@ -447,7 +443,7 @@ class BertLayer(nn.Module):
         batch, num_queries_vis, dim_vis = hidden_states_vis.shape
         _, num_queries_aud, dim_aud = hidden_states_aud.shape
 
-        # --- self-attn combiné vision + audio ---
+        # --- Combined Self-Attention ---
         self_attn_past_key_value = (
             past_key_value[:2] if past_key_value is not None else None
         )
@@ -462,24 +458,8 @@ class BertLayer(nn.Module):
         outputs = self_attention_outputs[1:-1]
         present_key_value = self_attention_outputs[-1]
 
-        if self_attention_outputs:
-            raw_probs = self_attention_outputs[1]
-            attention_probs = raw_probs[0] if isinstance(raw_probs, tuple) else raw_probs
-            
-            if attention_probs.min() < 0 or attention_probs.max() > 1:
-                attention_probs = torch.softmax(attention_probs, dim=-1)
-            
-            avg_attention = attention_probs.mean(dim=1)
-            # print(avg_attention)
-            heatmap_matrix = avg_attention[:, -48:, -48:]
-            
-            if not self.training:
-                if not hasattr(self, 'attention_store'):
-                    self.attention_store = []
-                
-                self.attention_store.append(heatmap_matrix.detach().clone().cpu())
                     
-        # --- Branche vision ---
+        # --- Vision Branch ---
         query_attention_output_vis = attention_output[:, :num_queries_vis, :]
         if self.has_cross_attention:
             assert encoder_hidden_states_vis is not None
@@ -493,9 +473,7 @@ class BertLayer(nn.Module):
             )
             query_attention_output_vis = cross_attention_outputs_vis[0]
             outputs = outputs + cross_attention_outputs_vis[1:-1]
-        #     print('vis')
-        # else:
-        #     print('no_vis')
+        
         layer_output_vis = apply_chunking_to_forward(
             self.feed_forward_chunk_vis,
             self.chunk_size_feed_forward,
@@ -503,7 +481,7 @@ class BertLayer(nn.Module):
             query_attention_output_vis,
         )
 
-        # --- Branche audio ---
+        # --- Audio Branch ---
         query_attention_output_aud = attention_output[:, num_queries_vis:num_queries_vis+num_queries_aud, :]
         if self.has_cross_attention_aud:
             assert encoder_hidden_states_aud is not None
@@ -517,9 +495,6 @@ class BertLayer(nn.Module):
             )
             query_attention_output_aud = cross_attention_outputs_aud[0]
             outputs = outputs + cross_attention_outputs_aud[1:-1]
-        #     print('aud')
-        # else:
-        #     print('no_aud')
 
         layer_output_aud = apply_chunking_to_forward(
             self.feed_forward_chunk_aud,
@@ -527,8 +502,7 @@ class BertLayer(nn.Module):
             self.seq_len_dim,
             query_attention_output_aud,
         )
-        # if layer_output_aud.size(0) == 1:
-        #     layer_output_aud = layer_output_aud.expand(layer_output_vis.shape[0], -1, -1) 
+        
         return layer_output_vis, layer_output_aud
 
 class BertEncoder(nn.Module):
