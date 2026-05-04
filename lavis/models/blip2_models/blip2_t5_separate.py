@@ -179,7 +179,6 @@ class Blip2T5_separate(Blip2Base):
             audio = samples["audio"].float()
             audio_mask = samples["audio_mask"]
             audio_mask_LLM = samples["audio_mask_LLM"]            
-            # print(audio_mask.shape,audio.shape,audio_mask_LLM.shape)
             
             with self.maybe_autocast(dtype=torch.float32): 
                 audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
@@ -216,16 +215,13 @@ class Blip2T5_separate(Blip2Base):
             inputs_t5_vis = self.t5_proj(query_output_vis.last_hidden_state)
             inputs_t5_aud = self.t5_proj_aud(query_output_aud.last_hidden_state)
             inputs_t5 = torch.cat([inputs_t5_aud,inputs_t5_vis],dim=1)
-            # print(inputs_t5.shape)
 
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
-            ### new code starts
             text = samples["text_input"]
 
             samples["text_input"] = [self.prompt] * B
             samples["text_output"] = text
-            ### new code ends
             
             with self.maybe_autocast(dtype=torch.bfloat16):
                 input_tokens = self.t5_tokenizer(
@@ -260,14 +256,13 @@ class Blip2T5_separate(Blip2Base):
                     labels=targets,
                 )
                 loss = outputs.loss
-                # print(loss)
+             
                 return {"loss": loss}
             
         else: # scst training: https://arxiv.org/abs/1612.00563
             audio = samples["audio"].float()
             audio_mask = samples["audio_mask"]
             audio_mask_LLM = samples["audio_mask_LLM"]
-            # print("audio_mask_LLM", audio_mask_LLM.shape, audio_mask_LLM.sum())
 
             with self.maybe_autocast(dtype=torch.float32): 
                 audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
@@ -365,14 +360,12 @@ class Blip2T5_separate(Blip2Base):
                         caps_gt_all.append(gt)  
                 caps_gt = caps_gt_all
 
-                # print(caps_gt,caps_gen)
                 caps_gen, caps_gt = tokenize(caps_gt, caps_gen)
 
                 reward = Cider().compute_score(caps_gt, caps_gen)[1].astype(np.float32)
                 reward = torch.from_numpy(reward).to(image.device).view(self.beam_size, len(samples["text_output"]))
                 reward = reward.mean(dim=1)
                 reward_baseline = torch.mean(reward, -1, keepdim=True)
-                # print(reward)
                 loss = - (sequences_scores) * (reward-reward_baseline)
                 loss = loss.mean()
 
@@ -508,7 +501,6 @@ class Blip2T5_separate(Blip2Base):
         audio = samples["audio"].float()
         audio_mask = samples["audio_mask"]
         audio_mask_LLM = samples["audio_mask_LLM"]
-        # print("audio_mask_LLM", audio_mask_LLM.shape, audio_mask_LLM.sum())
 
         with self.maybe_autocast(dtype=torch.float32): 
             audio_emb = self.audio_encoder.extract_features(audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool())[0]
