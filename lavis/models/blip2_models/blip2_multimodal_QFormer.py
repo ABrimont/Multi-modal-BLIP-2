@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.distributed as dist
 import torch.nn.functional as F
-from .Qformer_multimodal_dualpath import BertConfig, BertLMHeadModel
+from .multimodal_QFormer import BertConfig, BertLMHeadModel
 
 def init_Qformer_dual(num_query_token, vision_width, cross_attention_freq=2):
     encoder_config = BertConfig.from_pretrained("bert-base-uncased")
