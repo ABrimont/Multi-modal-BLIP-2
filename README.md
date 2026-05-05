@@ -58,9 +58,9 @@ data/
     └── annotations/   # Put your annotation JSON/CSV files here
 ```
 
-### Annotation Format
+### Evaluation File Format
 
-For validation and test splits, annotations should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations should be organized as follows:
+For validation and test splits evaluation, GT files should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations should be organized as follows:
 
 ```text
 data/
