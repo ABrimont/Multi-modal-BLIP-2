@@ -8,19 +8,19 @@ With minimal fine-tuning strategies, we achieve state-of-the-art results on comm
 
 ## 📖 Overview 
 
-Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned ca[...]
+Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned captions remains a challenging problem.
 
-Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridgi[...]
+Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridging audio, visual, and language modalities.
 
 ### 🧠 Key Contributions & Architecture
 
-* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vi[...]
+* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice-versa.
 * **The Multi-modal Q-Former:** A 12-layer transformer that retains the core BLIP-2 architecture but introduces two distinct sets of learnable queries (all with a dimensionality of 768):
   * **32 Visual Queries:** Attending to dense, frozen visual features (257 × 1024) extracted from ViT-L/14.
   * **16 Audio Queries:** Attending to frozen audio features (1500 × 768) extracted from BEATs.
-* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the *concatenation* of audio and visual queries to force cross-modal interaction. During cross-attent[...]
-* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the m[...]
-* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-cen[...]
+* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the *concatenation* of audio and visual queries to force cross-modal interaction. During cross-attention with the LLM, each query attends independently.
+* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the most salient information.
+* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-centric benchmarks (AudioCaps).
 
 ---
 
@@ -47,7 +47,7 @@ Finally, BEATs weights (BEATs_iter3_plus_AS2M) should be downloaded from [here](
 To download the necessary datasets, please refer to the official sources below:
 
 * **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data).
-* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. The full dataset is available on [Hugging Face](https://huggingface.co/dat[...]
+* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. The full dataset is available on [Hugging Face](https://huggingface.co/datasets/nlpaueb/latest_vatex).
 * **AudioCaps:** Available on the official [GitHub repository](https://audiocaps.github.io/).
 
 Once downloaded, organize the videos, audio files, and annotations into the following directory structure:
@@ -62,7 +62,7 @@ data/
 
 ### Evaluation File Format
 
-For validation and test splits evaluation, GT files should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations should be organized as follows:
+For validation and test splits evaluation, GT files should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations must be formatted consistently:
 
 ```text
 data/
@@ -94,7 +94,35 @@ The JSON files should follow the COCO caption format:
 
 ## 🚀 Getting Started
 
-*(To be completed)*
+### Training
+
+To launch training, run:
+
+```bash
+bash train.sh
+```
+
+After training starts, you can modify training configurations in:
+```
+lavis/projects/blip2/
+```
+
+Configuration files and training parameters can be adjusted in this directory to customize the training process according to your needs.
+
+### Evaluation
+
+To launch evaluation, run:
+
+```bash
+bash evaluate.sh
+```
+
+After evaluation starts, you can modify evaluation settings in:
+```
+lavis/projects/blip2/
+```
+
+Settings and evaluation parameters can be adjusted in this directory for different evaluation configurations.
 
 ## 🎓 Citation
 
@@ -115,6 +143,6 @@ This work builds upon the following projects and papers:
 
 * **BLIP-2** - [Salesforce Research](https://github.com/salesforce/BLIP) - Li et al., 2023
 * **BEATs** - [Microsoft UnilM](https://github.com/microsoft/unilm/tree/master/beats) - Chen et al., 2023
-* **Pretrained Image-Text Models are Secretly Video Captioners** - [MSR-VTT]([age/](https://github.com/chunhuizng/mllm-video-captioner/tree/main)) - Zhang et al., 2025
+* **Pretrained Image-Text Models are Secretly Video Captioners** - [MSR-VTT](https://github.com/chunhuizng/mllm-video-captioner/tree/main) - Zhang et al., 2025
 
 We thank the authors of these repositories and papers for their contributions to the field. 
