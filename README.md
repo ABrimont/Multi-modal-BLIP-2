@@ -32,6 +32,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+We also need to import some BEATs dependencies.
+```bash
+cd lavis/models/blip2_models
+git clone https://github.com/microsoft/unilm.git
+```
+
+Finaly, BEATS weights (BEATs_iter3_plus_AS2M) should be dowloaded fro here https://github.com/microsoft/unilm/tree/master/beats and plcae in weughts/ 
+
 ## 🗄️ Data Preparation
 
 To download the necessary datasets, please refer to the official sources below:
