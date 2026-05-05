@@ -2,40 +2,94 @@
 
 [![Conference](https://img.shields.io/badge/ICPR-2026-blue.svg)](#) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
-> Accepted in **ICPR 2026**.
+Accepted at ICPR 2026
 
-With minimal fine-tuning strategies, we achieve state-of-the-art results on common Video Captioning (VC) datasets such as MSR-VTT and VATEX, and competitive results on AudioCaps.
+We propose a multi-modal BLIP-2-based architecture for video captioning that achieves state-of-the-art performance on standard benchmarks such as MSR-VTT and VATEX, and competitive results on AudioCaps, while requiring only minimal fine-tuning.
 
-## 📖 Overview 
+--------------------------------------------------
 
-Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned captions remains a challenge. 
+OVERVIEW
 
-Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridging the gap between distinct modalities without the need for expensive video-text pre-training. Following the PIT-VC paradigm (Pretrained Image-Text Models are Secretly Video Captioners), our architecture transfers knowledge directly from BLIP-2’s image-text pre-training.
+Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, effectively aligning audio, visual, and textual modalities to generate natural, human-like captions remains a challenging problem.
 
-### 🧠 Key Contributions & Architecture
+Our open-source model introduces a novel Multi-modal Q-Former inspired by BLIP-2. It is specifically designed to perform early-stage cross-modal feature extraction, enabling efficient interaction between modalities without requiring expensive video-text pre-training.
 
-* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice versa, allowing each modality to inform and refine the other for deeper cross-modal reasoning.
-* **The Multi-modal Q-Former:** A 12-layer transformer that retains the core BLIP-2 architecture but introduces two distinct sets of learnable queries (all with a dimensionality of `768`):
-  * **`32` Visual Queries:** Attending to dense, frozen visual features (`257 × 1024`) extracted from ViT-L/14.
-  * **`16` Audio Queries:** Attending to frozen audio features (`1500 × 768`) extracted from BEATs.
-* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the *concatenation* of audio and visual queries to force cross-modal interaction. During cross-attention and feed-forward stages, the queries are processed *independently* to preserve their distinct modality-specific natures.
-* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the most salient information for caption generation.
-* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-centric ones (AudioCaps) under a minimal training regime.
+Following the PIT-VC paradigm (Pretrained Image-Text Models are Secretly Video Captioners), our approach leverages knowledge transferred directly from BLIP-2’s image-text pre-training.
 
----
+--------------------------------------------------
 
-## ⚙️ Installation
-*(À compléter)*
+KEY CONTRIBUTIONS & ARCHITECTURE
 
-## 🚀 Getting Started
-*(À compléter)*
+- Early Audio-Visual Fusion  
+  The model enables fine-grained interactions between audio and visual features at early layers. Visual queries can attend to audio representations and vice versa, improving cross-modal reasoning.
 
-## 🎓 Citation
-If you find our work useful in your research, please consider citing:
-```bibtex
-@inproceedings{...,
+- Multi-modal Q-Former  
+  A 12-layer transformer extending the BLIP-2 Q-Former with two sets of learnable queries (dimension 768):
+  - 32 Visual Queries attending to frozen visual features (257 x 1024) extracted from ViT-L/14  
+  - 16 Audio Queries attending to frozen audio features (1500 x 768) extracted from BEATs  
+
+- Cross-modal Interaction Mechanism  
+  Self-attention operates on the concatenation of audio and visual queries to enforce interaction.  
+  Cross-attention and feed-forward layers process modalities independently to preserve modality-specific representations.
+
+- Efficient Feature Compression  
+  Thousands of raw features are compressed into only 48 multi-modal tokens, capturing the most salient information for caption generation.
+
+- Efficient Training Strategy  
+  Achieves strong performance on both vision-centric datasets (MSR-VTT, VATEX) and audio-centric datasets (AudioCaps) with minimal training cost.
+
+--------------------------------------------------
+
+INSTALLATION
+
+python3.10 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+--------------------------------------------------
+
+DATA
+
+To download the datasets, refer to their official sources:
+
+MSR-VTT:
+https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data
+
+VATEX (latest version):
+https://huggingface.co/datasets/lmms-lab/VATEX
+
+AudioCaps:
+https://audiocaps.github.io/
+
+Note: The latest VATEX version is used because the original dataset was not fully available during training.
+
+DATA STRUCTURE
+
+data/
+  dataset_name/
+    raw_videos/
+    raw_audios/
+    annotations/
+
+--------------------------------------------------
+
+GETTING STARTED
+
+(To be completed)
+
+--------------------------------------------------
+
+CITATION
+
+@inproceedings{your2026blip2,
   title={A Multi-modal BLIP-2 Approach for Video Captioning},
-  author={...},
+  author={Your Name et al.},
   booktitle={ICPR},
   year={2026}
 }
+
+--------------------------------------------------
+
+LICENSE
+
+This project is released under the MIT License.
