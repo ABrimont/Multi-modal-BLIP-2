@@ -1,0 +1,128 @@
+{
+    "run": {
+        "runner": "runner_iter",
+        "max_iters": 10000,
+        "iters_per_inner_epoch": 1,
+        "task": "captioning",
+        "lr_sched": "linear_warmup_cosine_lr",
+        "init_lr": 1e-05,
+        "min_lr": 1e-06,
+        "warmup_lr": 1e-08,
+        "warmup_steps": 1000,
+        "weight_decay": 0.05,
+        "max_epoch": 20,
+        "batch_size_train": 16,
+        "batch_size_eval": 16,
+        "num_workers": 4,
+        "accum_grad_iters": 1,
+        "max_len": 32,
+        "min_len": 5,
+        "num_beams": 5,
+        "seed": 42,
+        "output_dir": "output/Video-BLIP2/FLAN-T5-XL/Caption_vatex",
+        "amp": true,
+        "resume_ckpt_path": null,
+        "evaluate": false,
+        "train_splits": [
+            "train"
+        ],
+        "valid_splits": [
+            "test"
+        ],
+        "test_splits": [
+            "test"
+        ],
+        "device": "cuda",
+        "world_size": 2,
+        "dist_url": "env://",
+        "distributed": true,
+        "rank": 0,
+        "gpu": 0,
+        "dist_backend": "nccl"
+    },
+    "model": {
+        "arch": "blip2_t5",
+        "load_finetuned": true,
+        "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth",
+        "finetuned": "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex/20251122105/checkpoint_best.pth",
+        "image_size": 224,
+        "drop_path_rate": 0,
+        "use_grad_checkpoint": false,
+        "vit_precision": "fp16",
+        "freeze_vit": true,
+        "num_query_token": 32,
+        "t5_model": "google/flan-t5-xl",
+        "prompt": "a video of",
+        "model_type": "pretrain_flant5xl",
+        "load_pretrained": false,
+        "lora": true,
+        "lora_r": 8,
+        "lora_alpha": 16,
+        "lora_dropout": 0.05
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip_image_train",
+                "image_size": 224
+            },
+            "eval": {
+                "name": "blip_image_eval",
+                "image_size": 224
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption"
+            },
+            "eval": {
+                "name": "blip_caption"
+            }
+        }
+    },
+    "datasets": {
+        "vatex_caption": {
+            "data_type": "videos",
+            "build_info": {
+                "annotations": {
+                    "train": {
+                        "url": "sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json",
+                        "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json"
+                    },
+                    "val": {
+                        "url": "sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json",
+                        "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json"
+                    },
+                    "test": {
+                        "url": "sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json",
+                        "storage": "/home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json"
+                    }
+                },
+                "videos": {
+                    "storage": "/home/abrimont/partage/VALOR/datasets/vatex/raw_videos"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "alpro_video_train",
+                    "n_frms": 16,
+                    "image_size": 224
+                },
+                "eval": {
+                    "name": "alpro_video_eval",
+                    "n_frms": 16,
+                    "image_size": 224
+                }
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                },
+                "eval": {
+                    "name": "blip_caption"
+                }
+            }
+        }
+    }
+}
+{"train_lr": "0.000", "train_loss": "2.137"}

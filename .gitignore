@@ -1,3 +1,4 @@
 venv/
 lavis/models/blip2_models/unilm/
 data/
+weights/
