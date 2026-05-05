@@ -37,7 +37,7 @@ pip install -r requirements.txt
 To download the necessary datasets, please refer to the official sources below:
 
 * **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data).
-* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. It is available on [Hugging Face](https://huggingface.co/datasets/lmms-lab/VATEX).
+* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. The full dataset is available on [Hugging Face](https://huggingface.co/datasets/lmms-lab/VATEX).Latest-VATEX ids will be shared.
 * **AudioCaps:** Available on the official [GitHub repository](https://audiocaps.github.io/).
 
 Once downloaded, organize the videos, audio files, and annotations into the following directory structure:
