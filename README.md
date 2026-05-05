@@ -108,3 +108,13 @@ If you find our work useful in your research, please consider citing:
   year={2026}
 }
 ```
+
+## 🙏 Acknowledgments
+
+This work builds upon the following projects and papers:
+
+* **BLIP-2** - [Salesforce Research](https://github.com/salesforce/BLIP) - Li et al., 2023
+* **BEATs** - [Microsoft UnilM](https://github.com/microsoft/unilm/tree/master/beats) - Chen et al., 2023
+* **Pretrained Image-Text Models are Secretly Video Captioners** - [MSR-VTT]([age/](https://github.com/chunhuizng/mllm-video-captioner/tree/main)) - Zhang et al., 2025
+
+We thank the authors of these repositories and papers for their contributions to the field. 
