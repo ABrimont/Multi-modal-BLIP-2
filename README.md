@@ -102,13 +102,6 @@ To launch training, run:
 bash train.sh
 ```
 
-After training starts, you can modify training configurations in:
-```
-lavis/projects/blip2/
-```
-
-Configuration files and training parameters can be adjusted in this directory to customize the training process according to your needs.
-
 ### Evaluation
 
 To launch evaluation, run:
@@ -117,12 +110,10 @@ To launch evaluation, run:
 bash evaluate.sh
 ```
 
-After evaluation starts, you can modify evaluation settings in:
+Training and evaluation configuration files and training parameters can be adjusted in this directory to customize the training process according to your needs.
 ```
 lavis/projects/blip2/
 ```
-
-Settings and evaluation parameters can be adjusted in this directory for different evaluation configurations.
 
 ## 🎓 Citation
 
