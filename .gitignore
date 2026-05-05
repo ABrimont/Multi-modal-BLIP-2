@@ -2,3 +2,9 @@ venv/
 lavis/models/blip2_models/unilm/
 data/
 weights/
+
+
+# --- Dossiers de build et metadata ---
+build/
+*.egg-info/
+__pycache__/
