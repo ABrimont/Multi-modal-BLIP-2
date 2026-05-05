@@ -27,6 +27,8 @@ Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter in
 ## ⚙️ Installation
 
 ```bash
+https://github.com/ABrimont/Multi-modal-BLIP-2.git
+cd Multi-modal-BLIP-2
 python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
