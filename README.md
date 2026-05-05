@@ -45,8 +45,8 @@ Once downloaded, organize the videos, audio files, and annotations into the foll
 ```text
 data/
 └── dataset_name/
-    ├── raw_videos/    # Put your raw .mp4/.avi files here
-    ├── raw_audios/    # Put your extracted audio files here
+    ├── raw_videos/    # Put your raw .mp4/.mkv files here
+    ├── raw_audios/    # Put your extracted audio .wav files here
     └── annotations/   # Put your annotation JSON/CSV files here
 ```
 
