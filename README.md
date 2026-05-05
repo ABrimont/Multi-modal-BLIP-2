@@ -29,7 +29,7 @@ Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter in
 ```bash
 python3.10 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt```
+pip install -r requirements.txt
 
 
 ## 🗄️ Data Preparation
@@ -49,4 +49,19 @@ data/
     ├── raw_audios/    # Put your extracted audio files here
     └── annotations/   # Put your annotation JSON/CSV files here
 
+## 🚀 Getting Started
+
+*(To be completed)*
+
+## 🎓 Citation
+
+If you find our work useful in your research, please consider citing:
+
+```bibtex
+@inproceedings{...,
+  title={A Multi-modal BLIP-2 Approach for Video Captioning},
+  author={...},
+  booktitle={ICPR},
+  year={2026}
+}
 
