@@ -92,7 +92,7 @@ class Blip2T5_multimodal(Blip2Base):
         super().__init__()
         freeze_audio = True,
 
-        # checkpoint = torch.load(BEATS weights path)
+        checkpoint = torch.load("./weights/BEATs_iter3_plus_AS2M.pt")
         cfg = BEATsConfig(checkpoint['cfg'])
         self.audio_encoder = BEATs(cfg)
         self.audio_encoder.load_state_dict(checkpoint['model'])
@@ -456,14 +456,17 @@ class Blip2T5_multimodal(Blip2Base):
                 temperature=temperature,
                 num_beams=5,
                 max_new_tokens=50,
-                min_length=3,
-                repetition_penalty=1.1,
-                length_penalty=0.8,
+                min_length= 3,
+                repetition_penalty=1.15,
+                length_penalty=0.7,
                 num_return_sequences=num_captions,
                 output_attentions=True,
                 return_dict_in_generate=True,
             )
-       
+
+        output_text = self.t5_tokenizer.batch_decode(
+            outputs.sequences, skip_special_tokens=True
+        )
 
         return output_text
 

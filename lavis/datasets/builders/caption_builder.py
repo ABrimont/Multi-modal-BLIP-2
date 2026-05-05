@@ -28,17 +28,6 @@ from lavis.datasets.datasets.video_caption_datasets_audio import (
     VideoCaptionEvalDatasetAudio,
 )
 
-
-from lavis.datasets.datasets.video_caption_datasets_audio_vatex import (
-    VideoCaptionDatasetAudioVATEX,
-    VideoCaptionEvalDatasetAudioVATEX,
-)
-
-from lavis.datasets.datasets.video_caption_AudioCaps import (
-    VideoCaptionDatasetAudioCaps,
-    VideoCaptionEvalDatasetAudioCaps,
-)
-
 @registry.register_builder("coco_caption")
 class COCOCapBuilder(BaseDatasetBuilder):
     train_dataset_cls = COCOCapDataset
@@ -117,8 +106,8 @@ class VATEXCapBuilder(BaseDatasetBuilder):
 
 @registry.register_builder("vatex_caption_audio")
 class VATEXAudioCapBuilder(BaseDatasetBuilder):
-    train_dataset_cls = VideoCaptionDatasetAudioVATEX
-    eval_dataset_cls = VideoCaptionEvalDatasetAudioVATEX
+    train_dataset_cls = VideoCaptionDatasetAudio
+    eval_dataset_cls = VideoCaptionEvalDatasetAudio
 
     DATASET_CONFIG_DICT = {
         "default": "/home/abrimont/partage/mllm-video-captioner/lavis/configs/datasets/vatex_audio/defaults_cap.yaml",
@@ -127,8 +116,8 @@ class VATEXAudioCapBuilder(BaseDatasetBuilder):
 
 @registry.register_builder("AudioCaps_caption")
 class AudioCapsCapBuilder(BaseDatasetBuilder):
-    train_dataset_cls = VideoCaptionDatasetAudioCaps
-    eval_dataset_cls = VideoCaptionEvalDatasetAudioCaps
+    train_dataset_cls = VideoCaptionDatasetAudio
+    eval_dataset_cls = VideoCaptionEvalDatasetAudio
 
     DATASET_CONFIG_DICT = {
         "default": "/home/abrimont/partage/mllm-video-captioner/lavis/configs/datasets/AudioCaps/defaults_cap.yaml",

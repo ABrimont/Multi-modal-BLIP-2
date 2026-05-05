@@ -1,169 +1,213 @@
-"""
- Copyright (c) 2022, salesforce.com, inc.
- All rights reserved.
- SPDX-License-Identifier: BSD-3-Clause
- For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
-"""
-
 import os
-import torchaudio
 import torch
-from lavis.datasets.datasets.base_dataset import BaseDataset
-
-from lavis.datasets.datasets.caption_datasets import CaptionDataset
+import torchaudio
 import soundfile as sf
+from lavis.datasets.datasets.base_dataset import BaseDataset
+from lavis.datasets.datasets.caption_datasets import CaptionDataset
 
+
+# ================================================================
+#   Utility function: pad / truncate audio + masks
+# ================================================================
+def pad_or_truncate_audio(audio, valid, target_length=160125, frame_hop=320, max_frames=496):
+    """
+    Cuts or pads an audio to a fixed length and creates BEATs / LLM masks.
+    audio: [1, T]
+    valid: 1 if audio is valid, 0 otherwise
+    """
+    
+    audio = audio[:, :target_length]
+    pad_len = target_length - audio.shape[1]
+    if pad_len > 0:
+        audio = torch.nn.functional.pad(audio, (0, pad_len))  
+        
+    mask_BEATs = torch.zeros(1, target_length, dtype=torch.bool)
+    if pad_len > 0:
+        mask_BEATs[:, -pad_len:] = True
+
+
+    mask_LLM = torch.zeros(1, max_frames, dtype=torch.long)
+    if valid == 1:
+        n_frames = min(audio.shape[1] // frame_hop, max_frames)
+        mask_LLM[:, :n_frames] = 1
+
+    return audio, mask_BEATs, mask_LLM
+
+
+
+# ================================================================
+#   AudioCaps Dataset — Training
+# ================================================================
 class VideoCaptionDatasetAudio(CaptionDataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
-        """
-        vis_root (string): Root directory of images (e.g. coco/images/)
-        ann_root (string): directory to store the annotation file
-        split (string): val or test
-        """
         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
-        # self.audio_root = "/home/abrimont/partage/VALOR/datasets/vatex/audio_22050hz"
-        
-        self.audio_root = "/home/abrimont/partage/VALOR/datasets/msrvtt/audio_22050hz"
-        self.vis_root= "/home/abrimont/partage/VALOR/datasets/msrvtt/raw_videos"
-
-    @staticmethod
-    def pad_or_truncate_audio(audio, valid, target_length=320250):
-        audio = audio[:, :target_length]
-        pad_len = target_length - audio.shape[1]
-        padded = torch.nn.functional.pad(audio, (0, pad_len))
-        mask_BEATs = torch.cat([
-            torch.zeros(1, audio.shape[1]),
-            torch.ones(1, pad_len)
-        ], dim=1).bool()
-
-        if valid == 0:
-            mask_LLM = torch.zeros(1, 1000)
-        else:
-            n_valid = min(1000, audio.shape[1] // 320)
-            mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1000 - n_valid)], dim=1)
-        return padded, mask_BEATs, mask_LLM
+        self.audio_root = self.vis_root.replace("raw_videos", "raw_audios")
 
     def __getitem__(self, index):
         ann = self.annotation[index]
         vname = ann["video"]
-        video_path = os.path.join(self.vis_root, vname)
-        # --- Charger la vidéo en mode safe ---
-        try:
-            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
-                raise FileNotFoundError(f"Video file missing or empty: {video_path}")
-            video = self.vis_processor(video_path)
-            valid_video = 1
-        except Exception as e:
-            print(f"[WARN] Failed to load video {video_path}: {e}")
-            # Dummy vidéo -> par ex. tenseur noir 224x224
-            video = torch.zeros(3, 8, 224, 224)  
-            valid_video = 0
         caption = ann.get("caption", "")
+        image_id = ann.get("image_id", index)
 
-        # --- Charger l’audio en mode safe ---
+
+        # ------------------------
+        #   VIDEO
+        # ------------------------
         try:
-            audio_file = os.path.join(self.audio_root, vname[:-4]) + ".wav"
+                           
+            video_path = os.path.join(self.vis_root, vname)
+            
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                video_path = os.path.join(self.vis_root, vname + ".mkv")
+
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                video_path = os.path.join(self.vis_root, vname + ".mp4")
+                
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                raise FileNotFoundError(f"Missing or empty video file: {video_path}")
+
+            video = self.vis_processor(video_path)
+            if video is None or not torch.is_tensor(video):
+                raise ValueError(f"vis_processor returned None or invalid tensor for {video_path}")
+
+            valid_video = 1
+
+        except Exception as e:
+            print(f"[WARN] Failed to load video {vname}: {e}")
+            video = torch.rand(3, 8, 224, 224)
+            valid_video = 0
+
+        # ------------------------
+        #   AUDIO
+        # ------------------------
+        try:
+            audio_file = os.path.join(
+                self.audio_root, os.path.splitext(os.path.basename(vname))[0]
+            ) + ".wav"
+
             waveform, sr = sf.read(audio_file, dtype="float32")
+            if waveform is None or len(waveform) == 0:
+                raise ValueError(f"Empty or None waveform in {audio_file}")
+
             if waveform.ndim > 1:
                 waveform = waveform.mean(axis=1)
-            waveform = torch.tensor(waveform).unsqueeze(0)  # [1, T]
+
+            waveform = torch.tensor(waveform).unsqueeze(0)
             if sr != 16000:
                 waveform = torchaudio.transforms.Resample(sr, 16000)(waveform)
+
             valid_audio = 1
+
         except Exception as e:
-            # print(f"[WARN] Failed to load audio {audio_file}: {e}")
-            waveform = torch.zeros(1, 320250)
+            print(f"[WARN] Failed to load audio {vname}: {e}")
+            waveform = torch.randn(1, 160125) * 1e-3
             valid_audio = 0
 
-        audio, mask_BEATs, mask_LLM = self.pad_or_truncate_audio(waveform, valid_audio)
+        # ------------------------
+        #   PADDING & MASKS
+        # ------------------------
+        audio, mask_BEATs, mask_LLM = pad_or_truncate_audio(waveform, valid_audio)
+
+        if any(x is None for x in [video, audio, mask_BEATs, mask_LLM]):
+            raise RuntimeError(f"[FATAL] Found None in sample {vname}")
 
         return {
             "video": video,
+            "image": video,
             "audio": audio,
             "audio_mask": mask_BEATs,
             "audio_mask_LLM": mask_LLM,
             "text_input": caption,
-            "image_id": ann["image_id"],  # ✅ direct string ID (filename)
+            "image_id": image_id,
             "valid_video": valid_video,
             "valid_audio": valid_audio,
         }
 
 
-
-
+# ================================================================
+#   Dataset AudioCaps — Eval
+# ================================================================
 class VideoCaptionEvalDatasetAudio(BaseDataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
-        """
-        vis_root (string): Root directory of images (e.g. coco/images/)
-        ann_root (string): directory to store the annotation file
-        split (string): val or test
-        """
         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
-        self.audio_root = "/home/abrimont/partage/VALOR/datasets/msrvtt/audio_22050hz"
-
-    @staticmethod
-    def pad_or_truncate_audio(audio, valid, target_length=320250):
-            audio = audio[:, :target_length]
-            pad_len = target_length - audio.shape[1]
-            padded = torch.nn.functional.pad(audio, (0, pad_len))
-            mask_BEATs = torch.cat([
-                torch.zeros(1, audio.shape[1]),
-                torch.ones(1, pad_len)
-            ], dim=1).bool()
-
-            if valid == 0:
-                mask_LLM = torch.zeros(1, 1000)
-            else:
-                n_valid = min(1000, audio.shape[1] // 320)
-                mask_LLM = torch.cat([torch.ones(1, n_valid), torch.zeros(1, 1000 - n_valid)], dim=1)
-            return padded, mask_BEATs, mask_LLM
+        self.audio_root = self.vis_root.replace("raw_videos", "raw_audios")
 
     def __getitem__(self, index):
         ann = self.annotation[index]
         vname = ann["video"]
-        video_path = os.path.join(self.vis_root, vname)
+        caption = ann.get("caption", "")
+        image_id = ann.get("image_id", index)
 
-        # --- Charger la vidéo en mode safe ---
+        # ------------------------
+        #   VIDÉO
+        # ------------------------
         try:
+                           
+            video_path = os.path.join(self.vis_root, vname)
+            
             if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
-                raise FileNotFoundError(f"Video file missing or empty: {video_path}")
+                video_path = os.path.join(self.vis_root, vname + ".mkv")
+
+
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                video_path = os.path.join(self.vis_root, vname + ".mp4")
+                
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                raise FileNotFoundError(f"Missing or empty video file: {video_path}")
+
             video = self.vis_processor(video_path)
+            if video is None or not torch.is_tensor(video):
+                raise ValueError(f"vis_processor returned None or invalid tensor for {video_path}")
+
             valid_video = 1
+
         except Exception as e:
-            print(f"[WARN] Failed to load video {video_path}: {e}")
-            # Dummy vidéo -> par ex. tenseur noir 224x224
-            video = torch.zeros(3, 8, 224, 224)  
+            print(f"[WARN] Failed to load eval video {vname}: {e}")
+            video = torch.rand(3, 8, 224, 224)
             valid_video = 0
 
-        # print(video_path)
-
-        # print(video.shape)
-        caption = ann.get("caption", "")
-
-        # --- Charger l’audio en mode safe ---
+        # ------------------------
+        #   AUDIO
+        # ------------------------
         try:
-            audio_file = os.path.join(self.audio_root, vname[:-4]) + ".wav"
+            audio_file = os.path.join(
+                self.audio_root, os.path.splitext(os.path.basename(vname))[0]
+            ) + ".wav"
+
             waveform, sr = sf.read(audio_file, dtype="float32")
+            if waveform is None or len(waveform) == 0:
+                raise ValueError(f"Empty or None waveform in {audio_file}")
+
             if waveform.ndim > 1:
                 waveform = waveform.mean(axis=1)
-            waveform = torch.tensor(waveform).unsqueeze(0)  # [1, T]
+
+            waveform = torch.tensor(waveform).unsqueeze(0)
             if sr != 16000:
                 waveform = torchaudio.transforms.Resample(sr, 16000)(waveform)
+
             valid_audio = 1
+
         except Exception as e:
-            # print(f"[WARN] Failed to load audio {audio_file}: {e}")
-            waveform = torch.zeros(1, 320250)
+            print(f"[WARN] Failed to load eval audio {vname}: {e}")
+            waveform = torch.randn(1, 160125) * 1e-3
             valid_audio = 0
 
-        audio, mask_BEATs, mask_LLM = self.pad_or_truncate_audio(waveform, valid_audio)
+        # ------------------------
+        #   PADDING & MASKS
+        # ------------------------
+        audio, mask_BEATs, mask_LLM = pad_or_truncate_audio(waveform, valid_audio)
+
+        if any(x is None for x in [video, audio, mask_BEATs, mask_LLM]):
+            raise RuntimeError(f"[FATAL] Found None in eval sample {vname}")
 
         return {
             "video": video,
+            "image": video,
             "audio": audio,
             "audio_mask": mask_BEATs,
             "audio_mask_LLM": mask_LLM,
             "text_input": caption,
-            "image_id": ann["image_id"],  # ✅ direct string ID (filename)
+            "image_id": image_id,
             "valid_video": valid_video,
             "valid_audio": valid_audio,
         }

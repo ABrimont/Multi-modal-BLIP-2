@@ -86,7 +86,7 @@ class CaptionTask(BaseTask):
     def _report_metrics(self, eval_result_file, split_name):
 
         # TODO better way to define this
-        coco_gt_root = os.path.join(GT_path, "coco_gt")
+        coco_gt_root = os.path.join('./data/', "coco_gt")
         coco_val = caption_eval(coco_gt_root, eval_result_file, split_name)
 
         agg_metrics = coco_val["cider"] + coco_val["bleu"][-1]
@@ -180,36 +180,24 @@ def caption_eval(coco_gt_root, results_file, split):
         annotation_file = os.path.join(coco_gt_root, filenames[split])
 
     elif "msrvtt" in results_file:
-        filenames = {
-            "val": "msrvtt_val_gt.json",
-            "test": "msrvtt_test_gt.json",
-        }
+        filenames = "msrvtt_gt.json"
         msrvtt_gt_root = coco_gt_root.replace("coco_gt", "msrvtt_gt")
-        annotation_file = os.path.join(msrvtt_gt_root, filenames[split])
+        annotation_file = os.path.join(msrvtt_gt_root, filenames)
 
     elif "AudioCaps" in results_file:
-        filenames = {
-            "val": "msrvtt_val_gt.json",
-            "test": "msrvtt_test_gt.json",
-        }
+        filenames = "audiocaps_gt.json"
         audiocaps_gt_root = coco_gt_root.replace("coco_gt", "audiocaps_gt")
-        annotation_file = os.path.join(audiocaps_gt_root, filenames[split])
+        annotation_file = os.path.join(audiocaps_gt_root, filenames)
         
     elif "msvd" in results_file:
-        filenames = {
-            "val": "msvd_val_gt.json",
-            "test": "msvd_test_gt.json",
-        }
+        filenames = "msvd_gt.json"
         msvd_gt_root = coco_gt_root.replace("coco_gt", "msvd_gt")
-        annotation_file = os.path.join(msvd_gt_root, filenames[split])
+        annotation_file = os.path.join(msvd_gt_root, filenames)
     
     elif "vatex" in results_file:
-        filenames = {
-            "val": "vatex_val_gt.json",
-            "test": "vatex_test_gt.json",
-        }
+        filenames = "vatex_gt.json"
         vatex_gt_root = coco_gt_root.replace("coco_gt", "vatex_gt")
-        annotation_file = os.path.join(vatex_gt_root, filenames[split])
+        annotation_file = os.path.join(vatex_gt_root, filenames)
 
     else:
         print(" ***** Output directory of captioning at LAVIS/lavis/outputs/ has to be name using one of ['Caption_coco', 'Caption_msrvtt', 'Caption_msvd', 'Caption_vatex']. ***** ")

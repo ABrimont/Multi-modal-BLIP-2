@@ -17,7 +17,7 @@ from lavis.tasks.pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
 from lavis.tasks.pycocoevalcap.cider.cider import Cider
 
 from .unilm.beats.BEATs import BEATs, BEATsConfig
-from .blip2_qf_dual_path import init_Qformer_dual
+from .blip2_multimodal_QFormer import init_Qformer_dual
 
 
 # ---------------------------------------------------------------------
