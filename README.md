@@ -75,22 +75,15 @@ data/
 The JSON files should follow the COCO caption format:
 
 ```json
-{
-  "images": [
+{"annotations": [
     {
+      "image_id": id_1,
       "id": 1,
-      "file_name": "video_id"
-    }
-  ],
-  "annotations": [
-    {
-      "image_id": 1,
-      "id": 2738,
       "caption": "Vehicles hum and vibrate as they rev their engines"
     },
     {
-      "image_id": 1,
-      "id": 2739,
+      "image_id": id_2,
+      "id": 2,
       "caption": "A car engine accelerating and revving while tires skid"
     }
   ]
