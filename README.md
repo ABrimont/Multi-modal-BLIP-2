@@ -8,19 +8,19 @@ With minimal fine-tuning strategies, we achieve state-of-the-art results on comm
 
 ## 📖 Overview 
 
-Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned captions remains a significant challenge. 
+Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned captions remains challenging.
 
-Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridging the gap between distinct modalities without the need for expensive video-text pre-training. Following the PIT-VC (Pretrained Image-Text Models are Secretly Video Captioners) paradigm, our architecture transfers knowledge directly from BLIP-2’s image-text pre-training.
+Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridging the gap between audio, visual, and language modalities.
 
 ### 🧠 Key Contributions & Architecture
 
-* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice versa, allowing each modality to inform and refine the other for deeper cross-modal reasoning.
+* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice versa.
 * **The Multi-modal Q-Former:** A 12-layer transformer that retains the core BLIP-2 architecture but introduces two distinct sets of learnable queries (all with a dimensionality of 768):
   * **32 Visual Queries:** Attending to dense, frozen visual features (257 × 1024) extracted from ViT-L/14.
   * **16 Audio Queries:** Attending to frozen audio features (1500 × 768) extracted from BEATs.
-* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the *concatenation* of audio and visual queries to force cross-modal interaction. During cross-attention and feed-forward stages, the queries are processed *independently* to preserve their distinct modality-specific natures.
-* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the most salient information for caption generation.
-* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-centric ones (AudioCaps) under a minimal training regime.
+* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the *concatenation* of audio and visual queries to force cross-modal interaction. During cross-attention, the unified multi-modal queries attend to both visual and audio encodings.
+* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the most salient information.
+* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-centric tasks (AudioCaps).
 
 ---
 
@@ -30,14 +30,14 @@ Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter in
 python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
+```
 
 ## 🗄️ Data Preparation
 
 To download the necessary datasets, please refer to the official sources below:
 
 * **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data).
-* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. It is available on [Hugging Face](https://huggingface.co/datasets/lmms-lab/VATEX/tree/main).
+* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. It is available on [Hugging Face](https://huggingface.co/datasets/lmms-lab/VATEX).
 * **AudioCaps:** Available on the official [GitHub repository](https://audiocaps.github.io/).
 
 Once downloaded, organize the videos, audio files, and annotations into the following directory structure:
@@ -48,6 +48,7 @@ data/
     ├── raw_videos/    # Put your raw .mp4/.avi files here
     ├── raw_audios/    # Put your extracted audio files here
     └── annotations/   # Put your annotation JSON/CSV files here
+```
 
 ## 🚀 Getting Started
 
@@ -64,4 +65,4 @@ If you find our work useful in your research, please consider citing:
   booktitle={ICPR},
   year={2026}
 }
-
+```
