@@ -58,6 +58,45 @@ data/
     └── annotations/   # Put your annotation JSON/CSV files here
 ```
 
+### Annotation Format
+
+For validation and test splits, annotations should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations should be organized as follows:
+
+```text
+data/
+├── msrvtt_gt/
+│   └── msrvtt_gt.json          # COCO caption format annotations for MSR-VTT val/test
+├── audiocaps_gt/
+│   └── audiocaps_gt.json       # COCO caption format annotations for AudioCaps val/test
+└── vatex_gt/
+    └── vatex_gt.json           # COCO caption format annotations for Latest-VATEX val/test
+```
+
+The JSON files should follow the COCO caption format:
+
+```json
+{
+  "images": [
+    {
+      "id": 1,
+      "file_name": "video_id"
+    }
+  ],
+  "annotations": [
+    {
+      "image_id": 1,
+      "id": 2738,
+      "caption": "Vehicles hum and vibrate as they rev their engines"
+    },
+    {
+      "image_id": 1,
+      "id": 2739,
+      "caption": "A car engine accelerating and revving while tires skid"
+    }
+  ]
+}
+```
+
 ## 🚀 Getting Started
 
 *(To be completed)*
