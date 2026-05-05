@@ -29,7 +29,7 @@ Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter in
 ```bash
 python3.10 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt'''
+pip install -r requirements.txt```
 
 
 ## 🗄️ Data Preparation
