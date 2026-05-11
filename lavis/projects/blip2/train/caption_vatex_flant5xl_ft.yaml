@@ -5,7 +5,6 @@ model:
   load_finetuned: True
 
   pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex/20251122105/checkpoint_best.pth"
 
   image_size: 224
   drop_path_rate: 0

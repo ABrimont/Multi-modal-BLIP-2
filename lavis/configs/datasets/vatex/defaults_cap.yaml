@@ -5,7 +5,7 @@
 
 datasets:
   vatex_caption: # name of the dataset builder
-    # data_dir: ${env.data_dir}/datasets
+    # data_dir: ${env.data_dir}/
     data_type: videos # [images|videos|features]
 
     build_info:
@@ -13,12 +13,12 @@ datasets:
       annotations:
         train:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/train_clean.json
+          storage: ./data/vatex/train.json
         val:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/val_clean_filtered.json
+          storage: ./data/vatex/val.json
         test:
           url: sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/vatex/annotations/test_clean_filtered.json
+          storage: ./data/vatex/test.json
       videos:
-        storage: /home/abrimont/partage/VALOR/datasets/vatex/raw_videos
+        storage: data/vatex/raw_videos

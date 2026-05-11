@@ -5,7 +5,7 @@
 
 datasets:
   msrvtt_caption_audio: # name of the dataset builder
-    data_dir: $/home/abrimont/partage/mllm-video-captioner/lavis/datasets/
+    # data_dir: ${env.data_dir}/
     data_type: videos # [images|videos|features]
 
     build_info:
@@ -13,12 +13,12 @@ datasets:
       annotations:
         train:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/msrvtt/cap_train.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/msrvtt/annotations/cap_train.json
+          storage: ./data/msrvtt/train.json
         val:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/msrvtt/cap_val.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/msrvtt/annotations/cap_val.json
+          storage: ./data/msrvtt/train.json
         test:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/msrvtt/cap_test.json
-          storage: /home/abrimont/partage/mllm-video-captioner/lavis/datasets/msrvtt/annotations/cap_test.json
+          storage: ./data/msrvtt/train.json
       videos:
-        storage: /home/abrimont/partage/VALOR/datasets/msrvtt/raw_videos
+        storage: ./data/msrvtt/raw_videos

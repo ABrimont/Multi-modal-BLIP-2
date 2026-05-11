@@ -4,8 +4,7 @@ model:
   load_pretrained: False
   load_finetuned: True
 
-  # pretrained: "/home/anonymous/new_ssd/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_audio/20251218152/checkpoint_best.pth"
+  finetuned: "./weights/VATEX_best.pth"
 
   image_size: 224
   drop_path_rate: 0
@@ -26,7 +25,7 @@ model:
   t5_model: "google/flan-t5-xl"
 
   # generation configs
-  prompt: "describe the video:"
+  prompt: "a video of"
 
 datasets:
   vatex_caption_audio: # name of the dataset builder
@@ -48,20 +47,22 @@ datasets:
 run:
   task: captioning
   batch_size_train: 16
-  batch_size_eval: 16
+  batch_size_eval: 4
   num_workers: 2
 
-  max_len: 32
-  min_len: 5
-  num_beams: 5
+  max_len: 50
+  min_len: 3
+  num_beams: 6
+  repetition_penalty: 1.05
+  length_penalty: 0.7
 
   seed: 42
-  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_vatex"
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_vatex_Aud_Eval"
 
   evaluate: True
   test_splits: ["test"]
 
   device: "cuda"
-  world_size: 1
+  world_size: 2
   dist_url: "env://"
   distributed: True

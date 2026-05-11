@@ -301,11 +301,9 @@ class Blip2T5_separate(Blip2Base):
             inputs_t5 = torch.cat([inputs_t5_aud,inputs_t5_vis],dim=1)
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
-            ### new code starts
             text = samples["text_input"]
             samples["text_input"] = [self.prompt] * B
             samples["text_output"] = text
-            ### new code ends
 
             with self.maybe_autocast(dtype=torch.bfloat16):
                 input_tokens = self.t5_tokenizer(
@@ -353,7 +351,7 @@ class Blip2T5_separate(Blip2Base):
                 caps_gen = list(itertools.chain(*([c, ] * len(samples["text_output"]) for c in caps_gen)))
 
                 caps_gt = list(itertools.chain(*([c, ] * self.beam_size for c in samples["text_output"])))
-                # caps_gt = [[c] for c in caps_gt]
+
                 caps_gt_all = []
                 for i in range(self.beam_size):
                     for gt in samples["text_output"]:
@@ -370,103 +368,6 @@ class Blip2T5_separate(Blip2Base):
                 loss = loss.mean()
 
                 return {"loss": loss}
-            
-            
-        # else:  # SCST
-        #     audio = samples["audio"].float()
-        #     audio_mask = samples["audio_mask"]
-        #     audio_mask_LLM = samples["audio_mask_LLM"]
-
-        #     with self.maybe_autocast(dtype=torch.float32): 
-        #         audio_emb = self.audio_encoder.extract_features(
-        #             audio.squeeze(1), padding_mask=audio_mask.squeeze(1).bool()
-        #         )[0]
-        #     audio_features = self.ln_audio(audio_emb)
-
-        #     image = samples["video"]
-        #     B, C, T, H, W = image.shape
-        #     image = image.permute(0,2,1,3,4).contiguous().reshape(B*T,C,H,W)
-
-        #     with self.maybe_autocast():
-        #         image_embeds = self.ln_vision(self.visual_encoder(image))
-        #         image_embeds = image_embeds.reshape(B, -1, image_embeds.shape[-1])
-        #         image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(image.device)
-
-        #     query_output = self.Qformer.bert(
-        #         query_embeds=self.query_tokens,
-        #         encoder_hidden_states=image_embeds,
-        #         encoder_attention_mask=image_atts,
-        #         encoder_hidden_states_aud=audio_features,
-        #         encoder_attention_mask_aud=audio_mask_LLM,
-        #         return_dict=True,
-        #     )
-
-        #     inputs_t5_vis = self.t5_proj(query_output.last_hidden_state[:,:32,:])
-        #     inputs_t5_aud = self.t5_proj_aud(query_output.last_hidden_state[:,32:,:])
-        #     inputs_t5 = torch.cat([inputs_t5_aud, inputs_t5_vis], dim=1)
-        #     atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
-
-        #     text = samples["text_input"]
-        #     samples["text_input"] = [self.prompt] * B
-        #     samples["text_output"] = text
-
-        #     input_tokens = self.t5_tokenizer(
-        #         samples["text_input"],
-        #         padding="longest",
-        #         truncation=True,
-        #         max_length=self.max_txt_len,
-        #         return_tensors="pt",
-        #     ).to(image.device)
-
-        #     encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
-        #     inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
-        #     inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
-
-        #     # --- greedy baseline ---
-        #     with torch.no_grad():
-        #         greedy_out = self.t5_model.generate(
-        #             inputs_embeds=inputs_embeds,
-        #             attention_mask=encoder_atts,
-        #             do_sample=False,
-        #             max_length=32,
-        #         )
-
-        #     # --- sampled output ---
-        #     sampled_out = self.t5_model.generate(
-        #         inputs_embeds=inputs_embeds,
-        #         attention_mask=encoder_atts,
-        #         do_sample=True,
-        #         top_p=0.9,
-        #         top_k=5,
-        #         temperature=1.0,
-        #         max_length=32,
-        #         return_dict_in_generate=True,
-        #         output_scores=True,
-        #     )
-
-        #     # compute log-probs
-        #     transition_scores = self.t5_model.compute_transition_scores(
-        #         sampled_out.sequences, sampled_out.scores, normalize_logits=False
-        #     )
-        #     output_length = torch.sum(transition_scores < 0, dim=1)
-        #     log_probs = transition_scores.sum(dim=1) / output_length
-
-        #     # decode
-        #     caps_sample = self.t5_tokenizer.batch_decode(sampled_out.sequences, skip_special_tokens=True)
-        #     caps_greedy = self.t5_tokenizer.batch_decode(greedy_out, skip_special_tokens=True)
-        #     caps_gt = samples["text_output"]
-
-        #     # compute rewards
-        #     cider = Cider()
-        #     reward_sample = cider.compute_score(caps_gt, caps_sample)[1].astype(np.float32)
-        #     reward_greedy = cider.compute_score(caps_gt, caps_greedy)[1].astype(np.float32)
-        #     advantage = torch.tensor(reward_sample - reward_greedy, device=image.device)
-
-        #     # final SCST loss
-        #     loss = - (advantage * log_probs).mean()
-
-        #     return {"loss": loss}
-
 
 
 
@@ -555,7 +456,6 @@ class Blip2T5_separate(Blip2Base):
 
         encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
 
-        # with self.maybe_autocast(dtype=torch.bfloat16):
         inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
         inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
 
@@ -565,12 +465,14 @@ class Blip2T5_separate(Blip2Base):
                 do_sample=use_nucleus_sampling,
                 top_p=top_p,
                 temperature=temperature,
-                num_beams=5,
-                max_new_tokens=50,
-                min_length=5,
-                repetition_penalty=1.05,
-                length_penalty=0.7,
+                num_beams=num_beams,
+                max_new_tokens=max_length,
+                min_length= min_length,
+                repetition_penalty=repetition_penalty,
+                length_penalty=length_penalty,
                 num_return_sequences=num_captions,
+                output_attentions=True,
+                return_dict_in_generate=True,
             )
         
         output_text = self.t5_tokenizer.batch_decode(

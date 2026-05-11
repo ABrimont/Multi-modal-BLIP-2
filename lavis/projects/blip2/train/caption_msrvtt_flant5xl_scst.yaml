@@ -4,7 +4,7 @@ model:
   load_pretrained: True
   load_finetuned: False
 
-  pretrained: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20251004112/checkpoint_best.pth"
+  # finetuned: CE trained .pth path
 
   image_size: 224
   drop_path_rate: 0
@@ -63,7 +63,7 @@ run:
   batch_size_train: 2 ### RTX-A6000
   batch_size_eval: 2
   num_workers: 2
-  accum_grad_iters: 4
+  accum_grad_iters: 16
 
   max_len: 32
   min_len: 5

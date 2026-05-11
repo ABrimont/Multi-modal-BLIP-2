@@ -1,11 +1,10 @@
 model:
-  arch: blip2_t5_separate
+  arch: blip2_t5_multimodal
   model_type: pretrain_flant5xl
   load_pretrained: False
   load_finetuned: True
 
-  # pretrained: "/home/anonymous/new_ssd/cache_dir/blip2_models/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_separate/20251212194/checkpoint_best.pth"
+  finetuned: "./weights/MSRVTT_best.pth"
   
   image_size: 224
   drop_path_rate: 0
@@ -48,15 +47,17 @@ datasets:
 run:
   task: captioning
   batch_size_train: 16
-  batch_size_eval: 16
-  num_workers: 4
+  batch_size_eval: 8
+  num_workers: 2
 
-  max_len: 32
+  max_len: 50
   min_len: 5
-  num_beams: 5
+  num_beams: 6
+  length_penalty: 0.7
+  repetition_penalty: 1.05
 
   seed: 42
-  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_aud_eval"
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_Aud_Eval"
 
   evaluate: True
   test_splits: ["test"]

@@ -11,6 +11,9 @@ from lavis.datasets.builders.caption_builder import (
     MSRVTTCapBuilder,
     MSVDCapBuilder,
     VATEXCapBuilder,
+    MSRVTTCapAudioBuilder,
+    VATEXAudioCapBuilder,
+    AudioCapsCapBuilder
 )
 from lavis.datasets.builders.image_text_pair_builder import (
     ConceptualCaption12MBuilder,
@@ -75,6 +78,9 @@ __all__ = [
     "Laion115MMultiBuilder", ### added
     "WebVid10MBuilder", ## added
     "WebVid2MImageBindBuilder", ### added
+    "MSRVTTCapAudioBuilder",
+    "VATEXAudioCapBuilder",
+    "AudioCapsCapBuilder"
 ]
 
 

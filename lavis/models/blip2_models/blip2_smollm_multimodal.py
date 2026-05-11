@@ -62,9 +62,7 @@ class Blip2SmolLM_multimodal(Blip2Base):
         # ------------------------------------------------------------------
         # 1. Audio Encoder (BEATs)
         # ------------------------------------------------------------------
-        checkpoint_path = (
-            "/home/abrimont/partage/mllm-video-captioner/"
-            "BEATs_iter3_plus_AS2M(2).pt"
+        checkpoint_path = ("./weights/BEATs_iter3_plus_AS2M(2).pt"
         )
         print(f"Loading Audio Encoder from {checkpoint_path}")
 

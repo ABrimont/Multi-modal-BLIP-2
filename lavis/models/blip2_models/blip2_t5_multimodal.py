@@ -208,12 +208,10 @@ class Blip2T5_multimodal(Blip2Base):
 
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
-            ### new code starts
             text = samples["text_input"]
 
             samples["text_input"] = [self.prompt] * B
             samples["text_output"] = text
-            ### new code ends
             
             with self.maybe_autocast(dtype=torch.bfloat16):
                 input_tokens = self.t5_tokenizer(
@@ -341,7 +339,7 @@ class Blip2T5_multimodal(Blip2Base):
                 caps_gen = list(itertools.chain(*([c, ] * len(samples["text_output"]) for c in caps_gen)))
 
                 caps_gt = list(itertools.chain(*([c, ] * self.beam_size for c in samples["text_output"])))
-                # caps_gt = [[c] for c in caps_gt]
+
                 caps_gt_all = []
                 for i in range(self.beam_size):
                     for gt in samples["text_output"]:
@@ -392,6 +390,7 @@ class Blip2T5_multimodal(Blip2Base):
         Returns:
             captions (list): A list of strings of length batch_size * num_captions.
         """
+        
         audio = samples["audio"].float()
         audio_mask = samples["audio_mask"]
         audio_mask_LLM = samples["audio_mask_LLM"]
@@ -444,9 +443,9 @@ class Blip2T5_multimodal(Blip2Base):
 
         encoder_atts = torch.cat([atts_t5, input_tokens.attention_mask], dim=1)
 
-        # with self.maybe_autocast(dtype=torch.bfloat16):
         inputs_embeds = self.t5_model.encoder.embed_tokens(input_tokens.input_ids)
         inputs_embeds = torch.cat([inputs_t5, inputs_embeds], dim=1)
+        
 
         outputs = self.t5_model.generate(
                 inputs_embeds=inputs_embeds,
@@ -454,11 +453,11 @@ class Blip2T5_multimodal(Blip2Base):
                 do_sample=use_nucleus_sampling,
                 top_p=top_p,
                 temperature=temperature,
-                num_beams=5,
-                max_new_tokens=28,
-                min_length= 3,
-                repetition_penalty=1.05,
-                length_penalty=0.6,
+                num_beams=num_beams,
+                max_new_tokens=max_length,
+                min_length= min_length,
+                repetition_penalty=repetition_penalty,
+                length_penalty=length_penalty,
                 num_return_sequences=num_captions,
                 output_attentions=True,
                 return_dict_in_generate=True,

@@ -4,8 +4,7 @@ model:
   load_pretrained: False
   load_finetuned: True
 
-  # finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/20250716115/checkpoint_best.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_audio/16_aud/checkpoint_best.pth"
+  # finetuned: CE trained .pth path
 
   image_size: 224
   drop_path_rate: 0
@@ -61,7 +60,7 @@ run:
   warmup_steps: 500
   weight_decay: 0.05
   max_epoch: 10
-  batch_size_train: 1 ### RTX-A6000
+  batch_size_train: 1 ### RTX-4090
   batch_size_eval: 16
   num_workers: 2
   accum_grad_iters: 16

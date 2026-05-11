@@ -15,7 +15,7 @@ from lavis.tasks.base_task import BaseTask
 
 @registry.register_task("captioning")
 class CaptionTask(BaseTask):
-    def __init__(self, num_beams, max_len, min_len, evaluate, report_metric=True):
+    def __init__(self, num_beams, max_len, min_len, evaluate, report_metric=True, length_penalty=1.0, repetition_penalty=1.0):
         super().__init__()
 
         self.num_beams = num_beams
@@ -24,6 +24,9 @@ class CaptionTask(BaseTask):
         self.evaluate = evaluate
 
         self.report_metric = report_metric
+
+        self.length_penalty = length_penalty
+        self.repetition_penalty = repetition_penalty
 
     @classmethod
     def setup_task(cls, cfg):
@@ -36,12 +39,17 @@ class CaptionTask(BaseTask):
 
         report_metric = run_cfg.get("report_metric", True)
 
+        length_penalty = run_cfg.get("length_penalty", 1.0)
+        repetition_penalty = run_cfg.get("repetition_penalty", 1.0)
+
         return cls(
             num_beams=num_beams,
             max_len=max_len,
             min_len=min_len,
             evaluate=evaluate,
             report_metric=report_metric,
+            length_penalty=length_penalty,
+            repetition_penalty=repetition_penalty
         )
 
     def valid_step(self, model, samples):
@@ -54,6 +62,8 @@ class CaptionTask(BaseTask):
             num_beams=self.num_beams,
             max_length=self.max_len,
             min_length=self.min_len,
+            length_penalty=self.length_penalty,
+            repetition_penalty=self.repetition_penalty
         )
 
         img_ids = samples["image_id"]

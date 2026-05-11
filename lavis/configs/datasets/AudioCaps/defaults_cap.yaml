@@ -6,7 +6,7 @@
 
 datasets:
   AudioCaps_caption: # name of the dataset builder
-    data_dir: $/home/abrimont/partage/mllm-video-captioner/lavis/datasets/
+    # data_dir: ${env.data_dir}/
     data_type: videos # [images|videos|features]
 
     build_info:
@@ -14,12 +14,12 @@ datasets:
       annotations:
         train:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_train.json
-          storage: /home/abrimont/partage/AudioCaps/train.json
+          storage: ./data/audiocaps/train.json
         val:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_val.json
-          storage: /home/abrimont/partage/AudioCaps/val_unique.json
+          storage: ./data/audiocaps/val.json
         test:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/vatex/cap_private_test.json
-          storage: /home/abrimont/partage/AudioCaps/test_unique.json
+          storage: ./data/audiocaps/test.json
       videos:
-        storage: /home/abrimont/partage/AudioCaps/audiocaps_raw_audio
+        storage: ./data/audiocaps/raw_videos

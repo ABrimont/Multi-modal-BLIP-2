@@ -111,11 +111,11 @@ class Blip2T5(Blip2Base):
             layer.output = None
             layer.intermediate = None
 
-        self.t5_tokenizer = T5TokenizerFast.from_pretrained(t5_model)   ### cache_dir="/home/anonymous/new_ssd/cache_dir"
+        self.t5_tokenizer = T5TokenizerFast.from_pretrained(t5_model)   
         t5_config = T5Config.from_pretrained(t5_model)
         t5_config.dense_act_fn = "gelu"
         self.t5_model = T5ForConditionalGeneration.from_pretrained(
-            t5_model, config=t5_config,   ### cache_dir="/home/anonymous/new_ssd/cache_dir"
+            t5_model, config=t5_config,   
         )
 
         for name, param in self.t5_model.named_parameters():
@@ -174,11 +174,9 @@ class Blip2T5(Blip2Base):
             inputs_t5 = self.t5_proj(query_output.last_hidden_state)
             atts_t5 = torch.ones(inputs_t5.size()[:-1], dtype=torch.long).to(image.device)
 
-            ### new code starts
             text = samples["text_input"]
             samples["text_input"] = [self.prompt] * B
             samples["text_output"] = text
-            ### new code ends
 
             with self.maybe_autocast(dtype=torch.bfloat16):
                 input_tokens = self.t5_tokenizer(
@@ -383,12 +381,16 @@ class Blip2T5(Blip2Base):
                 top_p=top_p,
                 temperature=temperature,
                 num_beams=num_beams,
-                max_new_tokens=50,
-                min_length=5,
-                repetition_penalty=1.05,
-                length_penalty=0.75,
+                max_new_tokens=max_length,
+                min_length= min_length,
+                repetition_penalty=repetition_penalty,
+                length_penalty=length_penalty,
                 num_return_sequences=num_captions,
+                output_attentions=True,
+                return_dict_in_generate=True,
             )
+
+            
             output_text = self.t5_tokenizer.batch_decode(
                 outputs, skip_special_tokens=True
             )

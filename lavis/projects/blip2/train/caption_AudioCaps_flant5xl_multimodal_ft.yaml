@@ -1,11 +1,11 @@
 model:
-  arch: blip2_smollm_multimodal
-  model_type: pretrain_smollm3
+  arch: blip2_t5_multimodal
+  model_type: pretrain_flant5xl
 
   load_pretrained: True
   load_finetuned: False
   pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
-  finetuned: "/home/abrimont/partage/mllm-video-captioner/lavis/output/Video-BLIP2/FLAN-T5-XL/Caption_AudioCaps/20251009004/checkpoint_best.pth"
+  # finetuned: 
 
   image_size: 224
   drop_path_rate: 0
@@ -58,7 +58,7 @@ run:
 
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
-  init_lr: 3e-5
+  init_lr: 5e-5
   min_lr: 1e-5
   warmup_lr: 1e-8
   warmup_steps: 1000
