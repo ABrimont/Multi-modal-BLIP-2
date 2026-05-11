@@ -38,6 +38,8 @@ We also need to import some BEATs dependencies.
 ```bash
 cd lavis/models/blip2_models
 git clone https://github.com/microsoft/unilm.git
+sed -i 's/^from backbone import/from .backbone import/' lavis/models/blip2_models/unilm/beats/BEATs.py
+sed -i 's/^from backbone import/from .backbone import/' lavis/models/blip2_models/unilm/beats/BEATs.py
 ```
 
 Finally, BEATs weights (BEATs_iter3_plus_AS2M) should be downloaded from [here](https://github.com/microsoft/unilm/tree/master/beats) and placed in `weights/`
