@@ -191,22 +191,22 @@ def caption_eval(coco_gt_root, results_file, split):
 
     elif "msrvtt" in results_file:
         filenames = "msrvtt_gt.json"
-        msrvtt_gt_root = coco_gt_root.replace("coco_gt", "msrvtt_gt")
+        msrvtt_gt_root = coco_gt_root.replace("coco_gt", "msrvtt")
         annotation_file = os.path.join(msrvtt_gt_root, filenames)
 
     elif "AudioCaps" in results_file:
         filenames = "audiocaps_gt.json"
-        audiocaps_gt_root = coco_gt_root.replace("coco_gt", "audiocaps_gt")
+        audiocaps_gt_root = coco_gt_root.replace("coco_gt", "audiocaps")
         annotation_file = os.path.join(audiocaps_gt_root, filenames)
         
     elif "msvd" in results_file:
         filenames = "msvd_gt.json"
-        msvd_gt_root = coco_gt_root.replace("coco_gt", "msvd_gt")
+        msvd_gt_root = coco_gt_root.replace("coco_gt", "msvd")
         annotation_file = os.path.join(msvd_gt_root, filenames)
     
     elif "vatex" in results_file:
         filenames = "vatex_gt.json"
-        vatex_gt_root = coco_gt_root.replace("coco_gt", "vatex_gt")
+        vatex_gt_root = coco_gt_root.replace("coco_gt", "vatex")
         annotation_file = os.path.join(vatex_gt_root, filenames)
 
     else:
