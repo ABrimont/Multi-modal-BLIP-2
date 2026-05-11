@@ -8,7 +8,7 @@ asttokens==2.2.1
 async-timeout==5.0.1
 attrs==23.1.0
 audioread==3.0.1
-av==10.0.0
+av==12.0.0
 backcall==0.2.0
 blinker==1.6.2
 blis==0.7.9
@@ -148,7 +148,6 @@ python-dateutil==2.8.2
 python-magic==0.4.27
 python-slugify==8.0.1
 pytorch-lightning==2.5.5
-pytorch-triton==3.5.0+gitfccfc522
 pytorchvideo @ git+https://github.com/facebookresearch/pytorchvideo.git@28fe037d212663c6a24f373b94cc5d478c8c1a1d
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
@@ -190,11 +189,11 @@ tokenizers==0.13.3
 toml==0.10.2
 tomli==2.0.1
 toolz==0.12.0
-torch==2.3.1+cu121
-torchaudio==2.3.1+cu121
+torch==2.3.1
+torchaudio==2.3.1
 torchlibrosa==0.1.0
 torchmetrics==1.8.2
-torchvision==0.18.1+cu121
+torchvision==0.18.1
 tornado==6.3.2
 tqdm==4.64.1
 traitlets==5.9.0
