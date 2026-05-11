@@ -14,7 +14,7 @@ Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter in
 
 ### 🧠 Key Contributions & Architecture
 
-![Overview of the multi-modal BLIP-2 framework](projects/Figure_2.png)
+![Overview of the multi-modal BLIP-2 framework](projects/Figure_2.jpg)
 
 * **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice-versa.
 * **The Multi-modal Q-Former:** A 12-layer transformer that retains the core BLIP-2 architecture but introduces two distinct sets of learnable queries (all with a dimensionality of 768):
