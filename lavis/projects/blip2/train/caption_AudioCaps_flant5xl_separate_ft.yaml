@@ -1,8 +1,9 @@
 model:
   arch: blip2_t5_separate
   model_type: pretrain_flant5xl
-  load_pretrained: False
-  load_finetuned: True
+
+  load_pretrained: True
+  load_finetuned: False
   pretrained: "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth"
 
   image_size: 224
