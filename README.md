@@ -38,6 +38,9 @@ We also need to import some BEATs dependencies.
 ```bash
 cd lavis/models/blip2_models
 git clone https://github.com/microsoft/unilm.git
+cd ..
+cd ..
+cd ..
 sed -i 's/^from backbone import/from .backbone import/' lavis/models/blip2_models/unilm/beats/BEATs.py
 sed -i 's/^from backbone import/from .backbone import/' lavis/models/blip2_models/unilm/beats/BEATs.py
 sed -i '/noise = torch.randn_like(fbank) \* 1e-6/d' lavis/models/blip2_models/unilm/beats/BEATs.py
