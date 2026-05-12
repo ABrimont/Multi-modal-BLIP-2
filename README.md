@@ -79,10 +79,10 @@ For validation and test splits evaluation, GT files should be placed in dataset-
 ```text
 data/
 ├── msrvtt_gt/
-│   └── msrvtt_gt.json          # COCO caption format annotations for MSR-VTT val/test
-├── audiocaps_gt/
+│   └── msrvtt.json          # COCO caption format annotations for MSR-VTT val/test
+├── audiocaps/
 │   └── audiocaps_gt.json       # COCO caption format annotations for AudioCaps val/test
-└── vatex_gt/
+└── vatex/
     └── vatex_gt.json           # COCO caption format annotations for Latest-VATEX val/test
 ```
 
