@@ -4,29 +4,29 @@
 
 > Accepted at **ICPR 2026**.
 
-With minimal fine-tuning strategies, we achieve state-of-the-art results on common Video Captioning (VC) datasets such as MSR-VTT and Latest-VATEX, alongside competitive performance on AudioCaps.
+This paper presents a novel multi-modal approach to video captioning that achieves state-of-the-art results on major benchmarks including MSR-VTT and Latest-VATEX, while maintaining competitive performance on AudioCaps, using minimal fine-tuning strategies.
 
 ## 📖 Overview 
 
-Recent advances in video captioning rely heavily on Vision-Language Models (VLMs). However, perfectly aligning audio, visual, and textual information to generate naturally perceptive, human-aligned video captions remains challenging.
+Recent advances in video captioning have been driven by the success of Vision-Language Models (VLMs). However, effectively aligning audio, visual, and textual modalities to generate human-aligned, natural video captions remains a significant challenge.
 
-Our **open-source** model introduces a novel **Multi-modal Q-Former** adapter inspired by BLIP-2. It is explicitly designed to perform early-stage cross-modal feature extraction, seamlessly bridging the gap between visual, audio, and textual modalities.
+Our work introduces an **open-source Multi-modal Q-Former** adapter inspired by BLIP-2, specifically designed for early-stage cross-modal feature fusion. This architecture seamlessly bridges visual and audio information through a novel query-based mechanism that preserves fine-grained modal interactions.
 
 ### 🧠 Key Contributions & Architecture
 
 ![Overview of the multi-modal BLIP-2 framework](projects/Figure_2.jpg)
 
-* **Early Audio-Visual Fusion:** Our design fosters fine-grained interactions between audio and visual cues at early layers. Visual queries can extract complementary information from audio, and vice-versa.
+* **Early Audio-Visual Fusion:** Our design promotes fine-grained interactions between audio and visual cues at early processing stages. Visual queries extract complementary information from audio features, and vice versa, enabling deeper cross-modal understanding.
 
-* **The Multi-modal Q-Former:** A 12-layer transformer that retains the core BLIP-2 architecture but introduces two distinct sets of learnable queries (all with a dimensionality of 768):
-  * **32 Visual Queries:** Attending to dense, frozen visual features (257 × 1024) extracted from ViT-L/14.
-  * **16 Audio Queries:** Attending to frozen audio features (1500 × 768) extracted from BEATs.
+* **The Multi-modal Q-Former:** A 12-layer transformer that builds upon the core BLIP-2 architecture while introducing two distinct learnable query sets (each with 768-dimensional embeddings):
+  * **32 Visual Queries:** Attend to dense, frozen visual features (257 × 1024) extracted from ViT-L/14.
+  * **16 Audio Queries:** Attend to frozen audio features (1500 × 768) extracted from BEATs.
 
-* **Smart Feature Interaction:** Within the self-attention modules, attention is computed over the concatenation of audio and visual queries to force cross-modal interaction. During cross-attention, each modality selectively attends to the frozen encoder outputs.
+* **Smart Feature Interaction:** Cross-modal interaction is enforced within self-attention modules through attention computed over concatenated audio and visual queries. During cross-attention, each modality queries the other modality's features, enabling bidirectional information flow.
 
-* **Massive Feature Compression:** The architecture efficiently compresses thousands of raw visual and audio features into a highly compact set of just **48 multi-modal tokens** that capture the most salient information.
+* **Massive Feature Compression:** The architecture efficiently condenses thousands of raw visual and audio features into a compact 48-token multi-modal representation that captures the most salient information from both modalities.
 
-* **Highly Efficient Training:** Demonstrates robust scalability by achieving state-of-the-art performance on vision-centric benchmarks (MSR-VTT, Latest-VATEX) and competitive results on audio-centric datasets (AudioCaps).
+* **Highly Efficient Training:** Demonstrates strong scalability across diverse benchmarks, achieving state-of-the-art performance on vision-centric datasets (MSR-VTT, Latest-VATEX) while maintaining competitive results on audio-centric benchmarks (AudioCaps).
 
 ---
 
@@ -38,13 +38,13 @@ cd Multi-modal-BLIP-2
 sh setup.sh
 ```
 
-Finally, BEATs weights (BEATs_iter3_plus_AS2M) should be downloaded from [here](https://github.com/microsoft/unilm/tree/master/beats) and placed in `weights/`
+Additionally, download the BEATs pre-trained weights (BEATs_iter3_plus_AS2M) from the [official repository](https://github.com/microsoft/unilm/tree/master/beats) and place them in the `weights/` directory.
 
 ---
 
 ## 📊 Performance Summary
 
-**Multi-modal BLIP-2 Performance:**
+**Multi-modal BLIP-2 Results:**
 
 | Dataset  | CIDEr | METEOR | ROUGE-L | BLEU-4  | SPICE |
 |---------|--------|--------|---------|---------|---------|
@@ -58,28 +58,30 @@ Finally, BEATs weights (BEATs_iter3_plus_AS2M) should be downloaded from [here](
 
 ### Downloading Datasets
 
-To download the necessary datasets, please refer to the official sources below:
+To obtain the necessary datasets, please visit the official sources below:
 
-* **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data).
-* **Latest-VATEX:** Since the original VATEX dataset was not fully available online during training, we use Latest-VATEX. The full dataset is available on [Hugging Face](https://huggingface.co/datasets/marcosamorim/latest-vatex).
-* **AudioCaps:** Available on the official [GitHub repository](https://audiocaps.github.io/).
+* **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data)
+* **Latest-VATEX:** The latest VATEX dataset is hosted on [Hugging Face](https://huggingface.co/datasets)
+* **AudioCaps:** Available on the [official repository](https://audiocaps.github.io/)
 
 ### Organizing Raw Data
 
-Once downloaded, organize the videos, audio files, annotations and groundtruth files into the following directory structure:
+After downloading the datasets, organize them into the following directory structure:
 
 ```text
 data/
 └── dataset_name/
-    ├── raw_videos/    # Put your raw .mp4/.mkv files here
-    ├── raw_audios/    # Put your extracted audio .wav files here
-    ├── train.json     # Put your annotation JSON/CSV files here
-    ├── val.json
-    ├── test.json 
-    └── msrvtt_gt.json/vatex_gt.json/vatex_gt.json  # COCO format annotations for MSR-VTT val/test
+    ├── raw_videos/               # Raw video files (.mp4, .mkv, etc.)
+    ├── raw_audios/               # Extracted audio files (.wav)
+    ├── train.json                # Training annotations
+    ├── val.json                  # Validation annotations
+    ├── test.json                 # Test annotations
+    └── *_gt.json                 # Ground truth in COCO format
 ```
 
-The gt JSON files should follow the COCO caption format:
+where `*_gt.json` represents `msrvtt_gt.json`, `vatex_gt.json`, or `audiocaps_gt.json` depending on the dataset.
+
+Ground truth files should follow the COCO caption format:
 
 ```json
 {
@@ -102,13 +104,13 @@ The gt JSON files should follow the COCO caption format:
 
 ## 💾 Pre-trained Model Weights
 
-To download the pre-trained model weights for our three Multi-modal BLIP-2 variants (trained on MSR-VTT, Latest-VATEX, and AudioCaps), run:
+To automatically download pre-trained weights for all three Multi-modal BLIP-2 variants (trained on MSR-VTT, Latest-VATEX, and AudioCaps), execute:
 
 ```bash
 python dw.py
 ```
 
-This script will automatically download all model weights and place them in the `weights/` directory.
+This script will download and organize all model weights into the `weights/` directory.
 
 ---
 
@@ -116,13 +118,13 @@ This script will automatically download all model weights and place them in the 
 
 ### Training
 
-To launch training, run:
+To initiate training, run:
 
 ```bash
 bash train.sh
 ```
 
-Training configuration files and parameters can be adjusted in the following directory to customize the training process:
+Training parameters and configuration files can be customized in:
 
 ```
 lavis/projects/blip2/
@@ -130,25 +132,25 @@ lavis/projects/blip2/
 
 ### Evaluation
 
-To launch evaluation, run:
+To evaluate the model, execute:
 
 ```bash
 bash evaluate.sh
 ```
 
-Evaluation configuration files can be customized in the same directory as above.
+Evaluation settings can be adjusted in the same configuration directory.
 
 ---
 
 ## 🎓 Citation
 
-If you find our work useful in your research, please consider citing:
+If you use this work in your research, please cite:
 
 ```bibtex
 @inproceedings{brimont2026multimodal,
   title={A Multi-modal BLIP-2 Approach for Video Captioning},
   author={Brimont, ...},
-  booktitle={ICPR},
+  booktitle={Proceedings of the 28th International Conference on Pattern Recognition (ICPR)},
   year={2026}
 }
 ```
@@ -157,10 +159,10 @@ If you find our work useful in your research, please consider citing:
 
 ## 🙏 Acknowledgments
 
-This work builds upon the following projects and papers:
+This work builds upon contributions from several important projects:
 
-* **BLIP-2** - [Salesforce Research](https://github.com/salesforce/BLIP) - Li et al., 2023
-* **BEATs** - [Microsoft UnilM](https://github.com/microsoft/unilm/tree/master/beats) - Chen et al., 2023
-* **Pretrained Image-Text Models are Secretly Video Captioners** - [GitHub Repository](https://github.com/chunhuizng/mllm-video-captioner/tree/main) - Zhang et al., 2025
+* **BLIP-2** – [Salesforce Research](https://github.com/salesforce/BLIP) (Li et al., 2023)
+* **BEATs** – [Microsoft UnilM](https://github.com/microsoft/unilm/tree/master/beats) (Chen et al., 2023)
+* **Pretrained Image-Text Models are Secretly Video Captioners** – [Repository](https://github.com/chunhuizng/mllm-video-captioner/tree/main) (Zhang et al., 2025)
 
-We thank the authors of these repositories and papers for their contributions to the field.
+We gratefully acknowledge the authors of these repositories and papers for their foundational contributions to the field.
