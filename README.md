@@ -66,11 +66,11 @@ This script will automatically download all model weights and place them in the 
 
 **Model Performance Summary:**
 
-| Dataset | Model | BLEU-4 | METEOR | CIDEr | ROUGE-L |
-|---------|-------|--------|--------|-------|---------|
-| **MSR-VTT** | Multi-modal BLIP-2 | 48.2 | 29.5 | 98.7 | 62.3 |
-| **Latest-VATEX** | Multi-modal BLIP-2 | 52.1 | 31.8 | 105.2 | 65.4 |
-| **AudioCaps** | Multi-modal BLIP-2 | 45.6 | 28.3 | 92.4 | 59.8 |
+| Dataset | Model | CIDEr | METEOR | ROUGE-L | BLEU-4  | SPICE |
+|---------|-------|--------|--------|-------|---------|---------|
+| **MSR-VTT** | Multi-modal BLIP-2 | 80.1 | 32.9 | 69.5 | 55 | 9.3 |
+| **Latest-VATEX** | Multi-modal BLIP-2 | 86.8 | 28.8 | 56.7 | 44.2 | 15 |
+| **AudioCaps** | Multi-modal BLIP-2 | 82.5 | 26 | 51.1 | 27.7 | 18.6 |
 
 ### Evaluation File Format
 
