@@ -1,0 +1,22 @@
+
+ # Copyright (c) 2022, anonymous.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  AudioCaps_caption: # name of the dataset builder
+    # data_dir: ${env.data_dir}/
+    data_type: videos # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          storage: ./data/audiocaps/train.json
+        val:
+          storage: ./data/audiocaps/val.json
+        test:
+          storage: ./data/audiocaps/test.json
+      videos:
+        storage: ./data/audiocaps/raw_videos

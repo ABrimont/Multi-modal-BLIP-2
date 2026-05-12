@@ -1,0 +1,45 @@
+# Copyright (c) 2023
+# SPDX-License-Identifier: BSD-3-Clause
+
+model:
+  arch: blip2_smollm_multimodal
+  model_type: pretrain_smollm3
+  load_finetuned: false
+
+  # vision encoder
+  image_size: 364
+  drop_path_rate: 0
+  use_grad_checkpoint: false
+  vit_precision: "fp16"
+  freeze_vit: false
+
+  # Q-Former
+  num_query_token: 48
+
+  # LLM : OPT-1.3B (Le choix le plus stable pour votre environnement)
+  llm_name: "LGAI-EXAONE/EXAONE-4.0-1.2B"
+
+  # generation
+  prompt: "a video of"
+  max_txt_len: 32
+  beam_size: 5
+
+  # training
+  scst: false
+  lora: false
+
+
+preprocess:
+  vis_processor:
+    train:
+      name: "blip_image_train"
+      image_size: 364
+    eval:
+      name: "blip_image_eval"
+      image_size: 364
+
+  text_processor:
+    train:
+      name: "blip_caption"
+    eval:
+      name: "blip_caption"
