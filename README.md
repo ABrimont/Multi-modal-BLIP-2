@@ -61,7 +61,7 @@ Additionally, download the BEATs pre-trained weights (BEATs_iter3_plus_AS2M) fro
 To obtain the necessary datasets, please visit the official sources below:
 
 * **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data)
-* **Latest-VATEX:** The latest VATEX dataset is hosted on [Hugging Face](https://huggingface.co/datasets)
+* **Latest-VATEX:** The VATEX dataset is hosted on [Hugging Face](https://huggingface.co/datasets) - Latest-VATEX ids can be found here for train/val/test.
 * **AudioCaps:** Available on the [official repository](https://audiocaps.github.io/)
 
 ### Organizing Raw Data
