@@ -4,29 +4,29 @@
 
 > Accepted at **ICPR 2026**.
 
-This paper presents a novel multi-modal approach to video captioning that achieves state-of-the-art results on major benchmarks including MSR-VTT and Latest-VATEX, while maintaining competitive performance on AudioCaps, using minimal fine-tuning strategies.
+This paper presents a novel multi-modal approach to video captioning that achieves state-of-the-art results on major benchmarks including MSR-VTT and Latest-VATEX, while maintaining competitive performance across audio-visual datasets.
 
 ## 📖 Overview 
 
-Recent advances in video captioning have been driven by the success of Vision-Language Models (VLMs). However, effectively aligning audio, visual, and textual modalities to generate human-aligned, natural video captions remains a significant challenge.
+Recent advances in video captioning have been driven by the success of Vision-Language Models (VLMs). However, effectively aligning audio, visual, and textual modalities to generate human-aligned, natural descriptions remains a significant challenge.
 
-Our work introduces an **open-source Multi-modal Q-Former** adapter inspired by BLIP-2, specifically designed for early-stage cross-modal feature fusion. This architecture seamlessly bridges visual and audio information through a novel query-based mechanism that preserves fine-grained modal interactions.
+Our work introduces an **open-source Multi-modal Q-Former** adapter inspired by BLIP-2, specifically designed for early-stage cross-modal feature fusion. This architecture seamlessly bridges visual, audio, and textual information through a novel Query-based Fusion mechanism.
 
 ### 🧠 Key Contributions & Architecture
 
 ![Overview of the multi-modal BLIP-2 framework](projects/Figure_2.jpg)
 
-* **Early Audio-Visual Fusion:** Our design promotes fine-grained interactions between audio and visual cues at early processing stages. Visual queries extract complementary information from audio features, and vice versa, enabling deeper cross-modal understanding.
+* **Early Audio-Visual Fusion:** Our design promotes fine-grained interactions between audio and visual cues at early processing stages. Visual queries extract complementary information from audio features, creating a unified cross-modal representation that preserves both modalities' richness.
 
 * **The Multi-modal Q-Former:** A 12-layer transformer that builds upon the core BLIP-2 architecture while introducing two distinct learnable query sets (each with 768-dimensional embeddings):
   * **32 Visual Queries:** Attend to dense, frozen visual features (257 × 1024) extracted from ViT-L/14.
   * **16 Audio Queries:** Attend to frozen audio features (1500 × 768) extracted from BEATs.
 
-* **Smart Feature Interaction:** Cross-modal interaction is enforced within self-attention modules through attention computed over concatenated audio and visual queries. During cross-attention, each modality queries the other modality's features, enabling bidirectional information flow.
+* **Smart Feature Interaction:** Cross-modal interaction is enforced within self-attention modules through attention computed over concatenated audio and visual queries. During cross-attention, each modality learns to selectively focus on the most informative features from the other modality.
 
-* **Massive Feature Compression:** The architecture efficiently condenses thousands of raw visual and audio features into a compact 48-token multi-modal representation that captures the most salient information from both modalities.
+* **Massive Feature Compression:** The architecture efficiently condenses thousands of raw visual and audio features into a compact 48-token multi-modal representation that captures the most salient information for caption generation.
 
-* **Highly Efficient Training:** Demonstrates strong scalability across diverse benchmarks, achieving state-of-the-art performance on vision-centric datasets (MSR-VTT, Latest-VATEX) while maintaining competitive results on audio-centric benchmarks (AudioCaps).
+* **Highly Efficient Training:** Demonstrates strong scalability across diverse benchmarks, achieving state-of-the-art performance on vision-centric datasets (MSR-VTT, Latest-VATEX) while maintaining competitive results on audio-rich datasets (AudioCaps).
 
 ---
 
@@ -61,7 +61,7 @@ Additionally, download the BEATs pre-trained weights (BEATs_iter3_plus_AS2M) fro
 To obtain the necessary datasets, please visit the official sources below:
 
 * **MSR-VTT:** Available on [Kaggle](https://www.kaggle.com/datasets/vishnutheepb/msrvtt/data)
-* **Latest-VATEX:** The VATEX dataset is hosted on [Hugging Face](https://huggingface.co/datasets) - Latest-VATEX ids can be found here for train/val/test: (https://huggingface.co/datasets/AntBri/vatex-ids)
+* **Latest-VATEX:** The VATEX dataset is hosted on [Hugging Face](https://huggingface.co/datasets) - Latest-VATEX ids can be found [here](https://huggingface.co/datasets/AntBri/vatex-ids) for train/val/test splits
 * **AudioCaps:** Available on the [official repository](https://audiocaps.github.io/)
 
 ### Organizing Raw Data
