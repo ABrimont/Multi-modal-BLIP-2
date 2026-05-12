@@ -56,6 +56,14 @@ data/
 
 ### Evaluation File Format
 
+To dowload the final weights for the 3 models, achieving the following performances;
+
+```text
+python dw.py
+```
+
+### Evaluation File Format
+
 For validation and test splits evaluation, GT files should be placed in dataset-specific directories (e.g., `msrvtt_gt`, `audiocaps_gt`, `vatex_gt`) in COCO caption format. Each dataset's ground-truth annotations must follow the COCO caption format.
 
 ```text
