@@ -73,7 +73,9 @@ data/
 └── dataset_name/
     ├── raw_videos/    # Put your raw .mp4/.mkv files here
     ├── raw_audios/    # Put your extracted audio .wav files here
-    └── annotations/   # Put your annotation JSON/CSV files here
+    ├── train.json     # Put your annotation JSON/CSV files here
+    ├── val.json
+    └── test.json 
 ```
 
 ### Preparing Evaluation Files
