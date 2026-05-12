@@ -64,13 +64,13 @@ python dw.py
 
 This script will automatically download all model weights and place them in the `weights/` directory.
 
-**Model Performance Summary:**
+**Multi-modal BLIP-2 Performance Summary:**
 
-| Dataset | Model | CIDEr | METEOR | ROUGE-L | BLEU-4  | SPICE |
-|---------|-------|--------|--------|-------|---------|---------|
-| **MSR-VTT** | Multi-modal BLIP-2 | 80.1 | 32.9 | 69.5 | 55 | 9.3 |
-| **Latest-VATEX** | Multi-modal BLIP-2 | 86.8 | 28.8 | 56.7 | 44.2 | 15 |
-| **AudioCaps** | Multi-modal BLIP-2 | 82.5 | 26 | 51.1 | 27.7 | 18.6 |
+| Dataset  | CIDEr | METEOR | ROUGE-L | BLEU-4  | SPICE |
+|---------|--------|--------|-------|---------|---------|
+| **MSR-VTT** | 80.1 | 32.9 | 69.5 | 55 | 9.3 |
+| **Latest-VATEX** | 86.8 | 28.8 | 56.7 | 44.2 | 15 |
+| **AudioCaps** | 82.5 | 26 | 51.1 | 27.7 | 18.6 |
 
 ### Evaluation File Format
 
