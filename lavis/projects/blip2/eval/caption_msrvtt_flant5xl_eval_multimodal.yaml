@@ -53,8 +53,8 @@ run:
   max_len: 50
   min_len: 5
   num_beams: 6
-  length_penalty: 0.7
-  repetition_penalty: 1.05
+  length_penalty: 0.8
+  repetition_penalty: 1.15
 
   seed: 42
   output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_msrvtt_Aud_Eval"
