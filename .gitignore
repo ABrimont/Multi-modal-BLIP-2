@@ -1,12 +1,8 @@
-# ==========================================
-# 1. Spécifique à ton projet (tes dossiers)
-# ==========================================
+
 lavis/models/blip2_models/unilm/
 cococaption/
 
-# ==========================================
-# 2. Données, Modèles et Logs (ML/IA)
-# ==========================================
+
 data/
 weights/
 # Ignorer les poids de modèles s'ils traînent à la racine
@@ -20,17 +16,13 @@ logs/
 tb_logs/
 wandb/
 
-# ==========================================
-# 3. Environnements virtuels et Secrets
-# ==========================================
+
 venv/
 env/
 .venv/
-.env  # TRÈS IMPORTANT : ne jamais commit tes clés d'API/mots de passe !
+.env 
 
-# ==========================================
-# 4. Fichiers générés par Python et Builds
-# ==========================================
+
 __pycache__/
 *.py[cod]
 *$py.class
@@ -41,14 +33,10 @@ dist/
 .pytest_cache/
 .coverage
 
-# ==========================================
-# 5. Jupyter Notebooks
-# ==========================================
+
 .ipynb_checkpoints/
 
-# ==========================================
-# 6. Fichiers système et IDE
-# ==========================================
+
 .DS_Store
 Thumbs.db
 .vscode/
