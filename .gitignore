@@ -5,13 +5,15 @@ cococaption/
 
 data/
 weights/
-# Ignorer les poids de modèles s'ils traînent à la racine
+
+
 *.pt
 *.pth
 *.ckpt
 *.h5
 *.safetensors
-# Ignorer les logs d'entraînement (Tensorboard, Weights & Biases)
+
+
 logs/
 tb_logs/
 wandb/
