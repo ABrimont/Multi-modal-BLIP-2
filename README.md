@@ -82,11 +82,11 @@ For validation and test splits evaluation, ground-truth (GT) files should be pla
 
 ```text
 data/
-├── msrvtt_gt/
-│   └── msrvtt.json              # COCO format annotations for MSR-VTT val/test
-├── audiocaps_gt/
+├── msrvtt/
+│   └── msrvtt_gt.json              # COCO format annotations for MSR-VTT val/test
+├── audiocaps/
 │   └── audiocaps_gt.json        # COCO format annotations for AudioCaps val/test
-└── vatex_gt/
+└── vatex/
     └── vatex_gt.json            # COCO format annotations for Latest-VATEX val/test
 ```
 
