@@ -66,7 +66,7 @@ To download the necessary datasets, please refer to the official sources below:
 
 ### Organizing Raw Data
 
-Once downloaded, organize the videos, audio files, and annotations into the following directory structure:
+Once downloaded, organize the videos, audio files, annotations and groundtruth files into the following directory structure:
 
 ```text
 data/
@@ -75,24 +75,11 @@ data/
     ├── raw_audios/    # Put your extracted audio .wav files here
     ├── train.json     # Put your annotation JSON/CSV files here
     ├── val.json
-    └── test.json 
+    ├── test.json 
+    └── msrvtt_gt.json/vatex_gt.json/vatex_gt.json  # COCO format annotations for MSR-VTT val/test
 ```
 
-### Preparing Evaluation Files
-
-For validation and test splits evaluation, ground-truth (GT) files should be placed in dataset-specific directories in COCO caption format:
-
-```text
-data/
-├── msrvtt/
-│   └── msrvtt_gt.json              # COCO format annotations for MSR-VTT val/test
-├── audiocaps/
-│   └── audiocaps_gt.json        # COCO format annotations for AudioCaps val/test
-└── vatex/
-    └── vatex_gt.json            # COCO format annotations for Latest-VATEX val/test
-```
-
-The JSON files should follow the COCO caption format:
+The gt JSON files should follow the COCO caption format:
 
 ```json
 {
