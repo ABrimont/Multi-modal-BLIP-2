@@ -51,11 +51,11 @@ run:
   batch_size_eval: 8
   num_workers: 2
 
-  max_len: 50
-  min_len: 3
+  max_len: 32
+  min_len: 5
   num_beams: 6
-  length_penalty: 1.25
-  repetition_penalty: 1.25
+  length_penalty: 1.30
+  repetition_penalty: 1.27
 
   seed: 42
   output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_AudioCaps_Eval"
