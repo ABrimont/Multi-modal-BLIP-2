@@ -55,7 +55,7 @@ run:
   min_len: 5
   num_beams: 6
   length_penalty: 1.30
-  repetition_penalty: 1.27
+  repetition_penalty: 1.25
 
   seed: 42
   output_dir: "output/Video-BLIP2/FLAN-T5-XL/Caption_AudioCaps_Eval"
