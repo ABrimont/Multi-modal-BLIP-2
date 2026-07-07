@@ -64,7 +64,6 @@ class Blip2SmolLM_multimodal(Blip2Base):
         # ------------------------------------------------------------------
         checkpoint_path = ("./weights/BEATs_iter3_plus_AS2M(2).pt"
         )
-        print(f"Loading Audio Encoder from {checkpoint_path}")
 
         checkpoint = torch.load(checkpoint_path)
         cfg = BEATsConfig(checkpoint["cfg"])
@@ -110,7 +109,6 @@ class Blip2SmolLM_multimodal(Blip2Base):
         # ------------------------------------------------------------------
         # 4. LLM & Tokenizer (Qwen 2.5)
         # ------------------------------------------------------------------
-        print(f"Loading LLM: {llm_name}")
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             llm_name,
@@ -125,10 +123,8 @@ class Blip2SmolLM_multimodal(Blip2Base):
 
         if torch.cuda.is_bf16_supported():
             self.train_dtype = torch.bfloat16
-            print("Training precision: bfloat16")
         else:
             self.train_dtype = torch.float16
-            print("Training precision: float16")
 
         device_arg = {"device_map": "auto"}
         if torch.cuda.is_available():
