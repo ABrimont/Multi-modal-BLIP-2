@@ -149,7 +149,7 @@ If you use this work in your research, please cite:
 ```bibtex
 @inproceedings{brimont2026multimodal,
   title={A Multi-modal BLIP-2 Approach for Video Captioning},
-  author={Brimont, ...},
+  author={Antoine Brimont, Titus Zaharia, Ruxandra Tapu},
   booktitle={Proceedings of the 28th International Conference on Pattern Recognition (ICPR)},
   year={2026}
 }
