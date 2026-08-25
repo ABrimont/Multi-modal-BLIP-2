@@ -16,9 +16,9 @@ datasets:
           storage: ./data/msrvtt/train.json
         val:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/msrvtt/cap_val.json
-          storage: ./data/msrvtt/train.json
+          storage: ./data/msrvtt/val.json
         test:
           url: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/datasets/msrvtt/cap_test.json
-          storage: ./data/msrvtt/train.json
+          storage: ./data/msrvtt/test.json
       videos:
         storage: ./data/msrvtt/raw_videos
