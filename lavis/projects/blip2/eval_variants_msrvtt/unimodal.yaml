@@ -1,0 +1,63 @@
+model:
+  arch: blip2_t5
+  model_type: pretrain_flant5xl
+  load_pretrained: False
+  load_finetuned: True
+
+  finetuned:  #Path of the checkpoint from stage 2 or dowloaded checkpoint
+  
+  image_size: 224
+  drop_path_rate: 0
+  use_grad_checkpoint: False
+  vit_precision: "fp16"
+  freeze_vit: True
+
+  # LoRA
+  lora: True
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.
+
+  # Q-Former
+  num_vis_query_token: 32
+  cross_attention_freq: 2
+
+  # T5
+  t5_model: "google/flan-t5-xl"
+
+  # generation configs
+  prompt: "a video of"
+
+datasets:
+  msrvtt_caption_audio: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "alpro_video_train"
+          n_frms: 16
+          image_size: 224
+        eval:
+          name: "alpro_video_eval"
+          n_frms: 16
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"
+
+run:
+  task: captioning
+  batch_size_train: 16
+  batch_size_eval: 8
+  num_workers: 2
+
+  seed: 42
+  output_dir: "output/Video-BLIP2/FLAN-T5-XL/Variants_eval_msrvtt/Unimodal"
+
+  evaluate: True
+  test_splits: ["test"]
+
+  device: "cuda"
+  world_size: 2
+  dist_url: "env://"
+  distributed: True

@@ -83,6 +83,7 @@ class Blip2T5(Blip2Base):
         lora_r=16,
         lora_alpha=32,
         lora_dropout=0.05,
+        cross_attention_freq=2
     ):
         """
         apply_lemmatizer: when set to True, postprocess predict_answers() result with lemmas.
@@ -505,7 +506,9 @@ class Blip2T5(Blip2Base):
     def from_config(cls, cfg):
         vit_model = cfg.get("vit_model", "eva_clip_g")
         img_size = cfg.get("image_size")
-        num_query_token = cfg.get("num_query_token")
+        num_vis_query_token = cfg.get("num_vis_query_token", 32)
+        cross_attention_freq = cfg.get("cross_attention_freq", 2)
+
         t5_model = cfg.get("t5_model")
 
         drop_path_rate = cfg.get("drop_path_rate", 0)
@@ -524,6 +527,8 @@ class Blip2T5(Blip2Base):
         lora_alpha=cfg.get("lora_alpha", 32)
         lora_dropout=cfg.get("lora_dropout", 0.05)
 
+        initialization=cfg.get("initialization", True)
+
         model = cls(
             vit_model=vit_model,
             img_size=img_size,
@@ -531,7 +536,7 @@ class Blip2T5(Blip2Base):
             use_grad_checkpoint=use_grad_checkpoint,
             vit_precision=vit_precision,
             freeze_vit=freeze_vit,
-            num_query_token=num_query_token,
+            num_query_token=num_vis_query_token,
             t5_model=t5_model,
             prompt=prompt,
             max_txt_len=max_txt_len,
@@ -541,7 +546,10 @@ class Blip2T5(Blip2Base):
             lora_r=lora_r,
             lora_alpha=lora_alpha,
             lora_dropout=lora_dropout,
+            cross_attention_freq=cross_attention_freq
         )
-        model.load_checkpoint_from_config(cfg)
 
+        if initialization == True:
+            model.load_checkpoint_from_config_multimodal(cfg)
+        
         return model

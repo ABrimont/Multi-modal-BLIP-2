@@ -40,6 +40,7 @@ from lavis.models.blip2_models.blip2_image_text_matching import Blip2ITM
 from lavis.models.blip2_models.blip2_t5_instruct import Blip2T5Instruct
 from lavis.models.blip2_models.blip2_vicuna_instruct import Blip2VicunaInstruct
 from lavis.models.blip2_models.blip2_t5_multimodal import Blip2T5_multimodal
+from lavis.models.blip2_models.blip_t5_multimodal_alternating import Blip2T5_multimodal_alternating
 from lavis.models.blip2_models.blip2_t5_separate import Blip2T5_separate
 from lavis.models.blip2_models.blip2_smollm_multimodal import Blip2SmolLM_multimodal
 
@@ -95,6 +96,7 @@ __all__ = [
     "Blip2T5Instruct",
     "Blip2VicunaInstruct",
     "Blip2T5_multimodal",
+    "Blip2T5_multimodal_alternating",
     "Blip2T5_separate",
     "Blip2SmolLM_multimodal"
     # "PNPVQA",

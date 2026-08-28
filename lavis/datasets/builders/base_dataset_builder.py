@@ -112,11 +112,14 @@ class BaseDatasetBuilder:
 
             urls, storage_paths = info.get("url", None), info.storage
 
+            if urls is None:
+                continue
+
             if isinstance(urls, str):
                 urls = [urls]
             if isinstance(storage_paths, str):
                 storage_paths = [storage_paths]
-
+                
             assert len(urls) == len(storage_paths)
 
             for url_or_filename, storage_path in zip(urls, storage_paths):
