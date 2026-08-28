@@ -1,8 +1,9 @@
 # A Multi-modal BLIP-2 Approach for Video Captioning
 
-[![Conference](https://img.shields.io/badge/ICPR-2026-blue.svg)](#) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
+[![Conference](https://img.shields.io/badge/ICPR-2026-blue.svg)](https://link.springer.com/chapter/10.1007/978-3-032-31663-9_39) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
-> Accepted at **ICPR 2026**.
+> Accepted at **ICPR 2026**. 
+> Official Paper: [Springer Link](https://link.springer.com/chapter/10.1007/978-3-032-31663-9_39)
 
 This paper presents a novel multi-modal approach to video captioning that achieves state-of-the-art results on major benchmarks including MSR-VTT and Latest-VATEX, while maintaining competitive performance across audio-visual datasets.
 
